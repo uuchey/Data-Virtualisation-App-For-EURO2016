@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
 
-    <!-- for django template rendering 
+    <!-- for django template rendering -->
     {% load staticfiles %}
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet"> -->
+    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet">
 
-    <link href="css/bootstrap.min.css"  rel="stylesheet">
-    <link href="css/flag-icon.min.css" rel="stylesheet"> 
+    <!-- <link href="css/bootstrap.min.css"  rel="stylesheet">
+    <link href="css/flag-icon.min.css" rel="stylesheet"> -->
 
     <title>EURO 2016</title>
 
@@ -38,17 +38,17 @@
 
   <body class="text-center">
     <div class="container text-center">
-      <img src="images/euro-logo.png" height="100">
+      <!-- <img src="images/euro-logo.png" height="100"> -->
 
-      <!-- <img src="{% static "images/euro-logo.png" %}" height="100"> -->
+      <img src="{% static "images/euro-logo.png" %}" height="100">
       <p class="lead text-info">Dynamic Interactive Data Visualization tool - UEFA 2016</p>
       <p class="text-warning">Probability Data collected from BetFair</p>
     </div>
 
 
     <!-- load the d3.js library --> 
-    <script src="js/d3.min.js"></script>
-    <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+    <!-- <script src="js/d3.min.js"></script> -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <script>
 
@@ -388,7 +388,7 @@
             d.parent.quarter = d.semifinal;
           }
           if(d.depth == 2){
-            d.parent.parent.quarter = d.final;
+            d.parent.quarter = d.final;
           }
           if(d.depth == 1){
             d.parent.quarter = d.win;
@@ -404,14 +404,14 @@
             d.parent.quarter = d.semifinal;
           }
           if(d.depth == 2){
-            d.parent.parent.quarter = d.final;
+            d.parent.quarter = d.final;
           }
           if(d.depth == 1){
             d.parent.quarter = d.win;
           }
           svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
           parentLine(d.parent);
-          highlightOff();
+          //highlightOff();
           
           // console.log(d);
         }
@@ -491,12 +491,13 @@
             highlightOff(d);
             highlightOn(d);
           }
-          toggle(d);
+          //toggle(d);
           update2(d);
 
-          // if(d.depth == 4){
-          //   d.parent.quarter = d.semifinal;
-          // }
+          if(d.depth == 4){
+            d.parent.quarter = d.semifinal;
+            console.log(d.parent.quarter);
+          }
           // if(d.depth == 3){
           //   d.parent.parent.quarter = d.final;
           //   console.log(d.parent);
@@ -506,11 +507,12 @@
           //   console.log(d.parent);
           // }
           // console.log(d);
-        });
+        })
+        .on("mouseout", function() { d3.event.stopPropagation(); });
 
         nodeEnter.append("circle")
-          .attr("r", 1e-6)
-          .style("fill", function(d) { return d._children ? "#7a8288" : "lightsteelblue"; });
+          .style("fill", function(d) { return d._children ? "#7a8288" : "lightsteelblue"; })
+          .attr("r", function(d) { return d._children ? 1e-6 : 5; });
 
       nodeEnter.append("image")
           .attr("xlink:href", function(d) { return d.icon; })
@@ -533,7 +535,7 @@
         .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
       nodeUpdate.select("circle")
-        .attr("r", 4)
+        .attr("r", function(d) { return d._children ? 10 : 5; })
         .style("fill", function(d) { return d._children ? "lightsteelblue" : "#7a8288"; });
 
       nodeUpdate.select("text")
@@ -542,8 +544,7 @@
       // Transition exiting nodes to the parent's new position.
       var nodeExit = node.exit().transition()
         .duration(duration)
-        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-        .remove();
+        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; });
 
       nodeExit.select("circle")
         .attr("r", 1e-6);
@@ -635,7 +636,7 @@
         .attr("d", function(d) {
         var o = {x: source.x0, y: source.y0};
           return diagonal({source: o, target: o});
-      });
+        });
 
       // Transition links to their new position.
       link.transition()
@@ -647,15 +648,16 @@
       link.exit().transition()
         .duration(duration)
         .attr("d", function(d) {
-        var o = {x: source.x, y: source.y};
-        return diagonal({source: o, target: o});
-        });
+          var o = {x: source.x, y: source.y};
+          return diagonal({source: o, target: o});
+      });
 
       // Stash the old positions for transition.
       return nodes.forEach(function(d) {
         d.x0 = d.x;
         d.y0 = d.y;
       });
+
     }
 
   root = treeData[0];
