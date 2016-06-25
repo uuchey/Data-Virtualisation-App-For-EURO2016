@@ -101,7 +101,7 @@ highlightOn = function(d) {
   parentLine = function(d) {
     if (d.parent) {
       parentLine(d.parent);
-      svg2.selectAll("path.link").classed('highlight', true);
+      svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
     }
   };
   parentLine(d);
@@ -214,9 +214,12 @@ function update2(source) {
 
   // Enter any new links at the parent's previous position.
   link.enter().insert("path", "g")
-    .attr("class", "link")
+    .attr("class", function(d) {
+      return "link source-" + d.source.name + " target-" + d.target.name;
+    }).
     .style("stroke", function(d) { return d.target.level; })
     .style("stroke-width", function(d) { return d.target.quarter/10; })
+    .attr("target",)
     .attr("d", function(d) {
     var o = {x: source.x0, y: source.y0};
       return diagonal({source: o, target: o});
