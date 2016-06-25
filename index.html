@@ -189,12 +189,15 @@ function click(d) {
   //alert(d.name);
   console.log(d.depth);
   if (d.children) {
-    if(d.depth == 2):
+    if(d.depth == 2){
       d.parent.quarter = d.semifinal;
-    if(d.depth == 1):
+    }
+    if(d.depth == 1){
       d.parent.quarter = d.final;
-    if(d.depth == 0):
+    }
+    if(d.depth == 0){
       d.parent.quarter = d.win;
+    }
     d._children = d.children;
     d.children = null;
   } 
