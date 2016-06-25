@@ -218,10 +218,10 @@ function update2(source) {
     .attr("stroke-width", function(d) {
       if(d.target.quarter.len == 0){ 
         console_log("sem target"); 
-        console.log(d)}; 
-      }
+        console.log(d)
+      }; 
       return d.target.quarter/10; 
-    })
+    });
   });
 
   // Enter any new links at the parent's previous position.
