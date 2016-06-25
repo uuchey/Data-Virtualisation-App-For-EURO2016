@@ -237,7 +237,7 @@
       // Update the links…
       var link = svg2.selectAll("path.link")
         .data(links, function(d) { return d.target.id; })
-        .attr("d", d3.svg.diagonal().projection(function(d) { return [o.x(d), o.y(d)]; }));
+        .attr("d", d3.svg2.diagonal().projection(function(d) { return [o.x(d), o.y(d)]; }))
         .attr("stroke-width", function(d) {
           if(d.target.quarter.len == 0){ 
             console_log("sem target"); 
