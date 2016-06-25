@@ -386,15 +386,10 @@
     //highlight nodes
     highlightOn = function(d) {
       var parentLine;
-      alert("Meu pai é" + d.parent.name);
-      
-
       parentLine = function(d) {
-        alert(d.name);
         if (d.parent) {
           parentLine(d.parent);
-          var l = svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);    
-          console.log(l);      
+          var l = svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);       
         }
       };
 
