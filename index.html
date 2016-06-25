@@ -204,7 +204,7 @@ function update2(source) {
 
   // Update the links…
   var link = svg2.selectAll("path.link")
-    .data(links, function(d) { console.log(d.target.id); return d.target.id; })
+    .data(links, function(d) { return d.target.id; })
     .attr("stroke-width", function(d) {
      return d.target.quarter/10; 
     });
