@@ -60,31 +60,50 @@ var svg2 = d3.select("body").append("svg")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-//basically a way to get the path to an object
-function searchTree(obj,search,path){
-  if(obj.name === search){ //if search is found return, add the object to the path and return it
-    path.push(obj);
-    return path;
+
+toggle = function(d) {
+  if (d.children) {
+    d._children = d.children;
+    return d.children = null;
+  } else {
+    d.children = d._children;
+    return d._children = null;
   }
-  else if(obj.children || obj._children){ //if children are collapsed d3 object will have them instantiated as _children
-    var children = (obj.children) ? obj.children : obj._children;
-    for(var i=0;i<children.length;i++){
-      path.push(obj);// we assume this path is the right one
-      var found = searchTree(children[i],search,path);
-      if(found){// we were right, this should return the bubbled-up path from the first if statement
-        return found;
-      }
-      else{//we were wrong, remove this parent from the path and continue iterating
-        path.pop();
-      }
+};
+
+closeNodes = function(root) {
+  var d, _i, _len, _ref, _results;
+  _ref = root.children;
+  _results = [];
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    d = _ref[_i];
+    if (d.children) {
+      d.children = d._children;
+      _results.push(d._children = null);
+    } else {
+      _results.push(void 0);
     }
   }
-  else{//not the right object, return false so it will continue to iterate in the loop
-    return false;
-  }
-}
+  return _results;
+};
 
-console.log(searchTree("France"));
+highlightOn = function(d) {
+  var parentLine;
+  parentLine = function(d) {
+    if (d.parent) {
+      parentLine(d.parent);
+      vis.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
+    }
+  };
+  parentLine(d);
+  return update(d);
+};
+
+highlightOff = function(d) {
+  vis.selectAll("path.link").classed('highlight', false);
+  return update(d);
+};
+
 
 
 
@@ -108,6 +127,15 @@ function update2(source) {
     .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
     .on("click", click)
     .on("mouseover",function(d){
+      if (d3.event.metaKey) {
+        highlightOn(d);
+      } else {
+        highlightOff(d);
+        highlightOn(d);
+      }
+      toggle(d);
+      update2(d);
+
       if(d.depth == 4){
         d.parent.quarter = d.semifinal;
       }
