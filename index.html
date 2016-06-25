@@ -81,12 +81,15 @@ function update2(source) {
     .on("mouseover",function(d){
       if(d.depth == 4){
         d.parent.quarter = d.semifinal;
+        console.log(d.parent);
       }
       if(d.depth == 3){
         d.parent.quarter = d.final;
+        console.log(d.parent);
       }
       if(d.depth == 2){
         d.parent.quarter = d.win;
+        console.log(d.parent);
       }
       console.log(d);
     });
