@@ -242,10 +242,9 @@ function update2(source) {
     });
   }).remove();
 
-    
+
     .style("stroke", function(d) { return d.target.level; })
     .style("stroke-width", function(d) { return d.target.quarter/10; })
-    .attr("target",)
     .attr("d", function(d) {
     var o = {x: source.x0, y: source.y0};
       return diagonal({source: o, target: o});
