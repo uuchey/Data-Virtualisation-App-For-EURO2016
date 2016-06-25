@@ -180,10 +180,17 @@ function click(d) {
     d.children = null;
   } 
   else {
-    d.parent.quarter = d.semifinal;
-    //alert("nao tem filhos");
-    // console.log(d.children.semifinal)
-    // d.attr("stroke-width",d.semifinal)
+    if(d.depth == 4){
+      d.parent.quarter = d.semifinal;
+      console.log(d.semifinal);
+      console.log(d.parent.quarter);
+    }
+    if(d.depth == 3){
+      d.parent.quarter = d.final;
+    }
+    if(d.depth == 2){
+      d.parent.quarter = d.win;
+    }
     d.children = d._children;
     d._children = null;
   }
