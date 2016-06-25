@@ -218,6 +218,12 @@ function update2(source) {
     .attr("class", function(d) {
       return "link source-" + d.source.name + " target-" + d.target.name;
     })
+    .style("stroke", function(d) { return d.target.level; })
+    .style("stroke-width", function(d) { return d.target.quarter/10; })
+    .attr("d", function(d) {
+    var o = {x: source.x0, y: source.y0};
+      return diagonal({source: o, target: o});
+    })
     .attr("d", function(d) {
     var o;
     o = {
@@ -243,12 +249,7 @@ function update2(source) {
   }).remove();
 
 
-    .style("stroke", function(d) { return d.target.level; })
-    .style("stroke-width", function(d) { return d.target.quarter/10; })
-    .attr("d", function(d) {
-    var o = {x: source.x0, y: source.y0};
-      return diagonal({source: o, target: o});
-    })
+    
 
   // Transition links to their new position.
   link.transition()
