@@ -216,8 +216,13 @@ function update2(source) {
   var link = svg2.selectAll("path.link")
     .data(links, function(d) { return d.target.id; })
     .attr("stroke-width", function(d) {
-      if(d.target.quarter.len == 0){ console_log("sem target"); console.log(d)}; return d.target.quarter/10; });
-    });
+      if(d.target.quarter.len == 0){ 
+        console_log("sem target"); 
+        console.log(d)}; 
+      }
+      return d.target.quarter/10; 
+    })
+  });
 
   // Enter any new links at the parent's previous position.
   link.enter().insert("path", "g")
