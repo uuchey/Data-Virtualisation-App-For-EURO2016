@@ -97,7 +97,7 @@ highlightOn = function(d) {
     console.log(d.parent);
     if (d.parent) {
       parentLine(d.parent);
-      highlightOff();
+      //highlightOff();
       svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
       // if(d.depth == 4){
       //   d.parent.quarter = d.semifinal;
@@ -167,10 +167,10 @@ function update2(source) {
       //   console.log(d.parent);
       // }
       // console.log(d);
-    })
-    .on("mouseout",function(d){
-      highlightOff(d);
-    });;
+    });
+    // .on("mouseout",function(d){
+    //   highlightOff(d);
+    // });;
 
   nodeEnter.append("circle")
     .attr("r", 1e-6)
@@ -286,7 +286,6 @@ function update2(source) {
 // Toggle children on click.
 function click(d) {
   //alert(d.name);
-  console.log(d.depth);
   if (d.children) {
     if(d.depth == 4){
       d.parent.quarter = d.semifinal;
