@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    {% load staticfiles %}
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet">
+
+    <title>EURO 2016</title>
+
+    <style>
+
+  .node circle {
+    fill: black;
+    stroke: black;
+    stroke-width: 1px;
+  }
+
+  .node text { font: 12px sans-serif; }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
+  
+    </style>
+
+  </head>
+
+  <body>
+    <div class="container text-center">
+      <img src="{% static "images/euro-logo.png" %}" height="100">
+    </div>
+
+
+<!-- load the d3.js library --> 
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+
+var margin = {top: 20, right: 120, bottom: 20, left: 120},
+  width = 960 - margin.right - margin.left,
+  height = 500 - margin.top - margin.bottom;
+  
+var i = 0,
+  duration = 750,
+  root;
+
+var treeDynamic = d3.layout.tree()
+  .size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+  .projection(function(d) { return [d.y, d.x]; });
+
+var svg2 = d3.select("body").append("svg")
+  .attr("width", width + margin.right + margin.left)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("id","sem_bandeira")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+function update2(source) {
+
+  // Compute the new tree layout.
+  var nodes = treeDynamic.nodes(source).reverse(),
+    links = treeDynamic.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = svg2.selectAll("g.node")
+    .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+    .attr("class", "node")
+    .attr("quarter", function(d) { return d.quarter; })
+    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+    .on("click", click);
+
+  nodeEnter.append("circle")
+    .attr("r", 1e-6)
+    .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("image")
+      .attr("xlink:href", function(d) { return d.icon; })
+      .attr("x", "-12px")
+      .attr("y", "-12px")
+      .attr("width", "24px")
+      .attr("height", "24px");
+
+  nodeEnter.append("text")
+    .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+    .attr("dy", ".35em")
+    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+    .text(function(d) { return d.name; })
+    .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+    .duration(duration)
+    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+    .attr("r", 10)
+    .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+    .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+    .duration(duration)
+    .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+    .remove();
+
+  nodeExit.select("circle")
+    .attr("r", 1e-6);
+
+  nodeExit.select("text")
+    .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg2.selectAll("path.link")
+    .data(links, function(d) { return d.target.id; })
+    .attr("stroke-width", function(d) { return d.target.quarter/10; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+    .attr("class", "link")
+    .style("stroke", function(d) { return d.target.level; })
+    .style("stroke-width", function(d) { return d.target.quarter/10; })
+    .style("fill", "red")
+    .attr("d", function(d) {
+    var o = {x: source.x0, y: source.y0};
+    return diagonal({source: o, target: o});
+    })
+
+  // Transition links to their new position.
+  link.transition()
+    .duration(duration)
+    .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+    .duration(duration)
+    .attr("d", function(d) {
+    var o = {x: source.x, y: source.y};
+    return diagonal({source: o, target: o});
+    })
+    .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+  d.x0 = d.x;
+  d.y0 = d.y;
+  });
+}
+
+// Toggle children on click.
+function click(d) {
+  if (d.children) {
+  d._children = d.children;
+  d.children = null;
+  } else {
+  d.children = d._children;
+  d._children = null;
+  }
+  update2(d);
+}
+
+var treeData = [
+  {
+    "name": "Winner",
+    "parent": "null",
+    "children": [
+      {
+        "name": "Finalist 1",
+        "quarter": 57.47126436781609,
+        "semifinal": 35.21126760563381,
+        "final": 21.27659574468085,
+        "win": 9.523809523809524,
+        "type": "grey",
+        "level": "green",
+        "children":[
+          {
+            "name": "Fisrt Semi-Finalist Classified",
+            "parent": "Finalist 1",
+            "quarter": 57.47126436781609,
+            "semifinal": 35.21126760563381,
+            "final": 21.27659574468085,
+            "win": 9.523809523809524,
+            "type": "grey",
+            "level": "red",
+            "children":[
+              {
+                "name": "1st Quarter Final Classified",
+                "quarter": 57.47126436781609,
+                "semifinal": 35.21126760563381,
+                "final": 21.27659574468085,
+                "win": 9.523809523809524,
+                "type": "grey",
+                "level": "red",
+                "children":[
+                  {
+                    "name": "Poland",
+                    "parent": "null",
+                    "quarter": 56.49717514124294,
+                    "semifinal": 22.22222222222222,
+                    "final":  10.0,
+                    "win": 3.4482758620689653,
+                    "type": "steelblue",
+                    "icon": "{% static "images/flags/pol.png" %}",
+                    "level": "Green",
+                  },
+                  {
+                    "name": "Switzerland",
+                    "parent": "null",
+                    "quarter": 45.45454545454545,
+                    "semifinal": 16.666666666666664,
+                    "final":  5.714285714285714,
+                    "win": 1.8181818181818181,
+                    "icon": "{% static "images/flags/swi.png" %}",
+                    "level": "Red",
+                  },
+                ]
+              },
+              {
+                "name": "2nd Quarter Final Classified",
+                "quarter": 57.47126436781609,
+                "semifinal": 35.21126760563381,
+                "final": 21.27659574468085,
+                "win": 9.523809523809524,
+                "type": "grey",
+                "level": "red",
+                "children":[
+                  {
+                        "name": "Portugal",
+                        "quarter": 46.728971962616825,
+                        "semifinal": 27.77777777777778,
+                        "final": 17.24137931034483,
+                        "win": 5.88235294117647,
+                        "type": "grey",
+                        "icon": "{% static "images/flags/por.png" %}",
+                        "level": "blue",
+                      },
+                      {
+                        "name": "Croatia",
+                        "quarter": 57.47126436781609,
+                        "semifinal": 35.21126760563381,
+                        "final": 21.27659574468085,
+                        "win": 9.523809523809524,
+                        "type": "grey",
+                        "level": "light-blue",
+                        "icon": "{% static "images/flags/cro.png" %}",
+                      },
+                ]
+              },
+            ]
+          },
+          {
+            "name": "Second Semi-Finalist Classified",
+            "parent": "Finalist 1",
+            "quarter": 57.47126436781609,
+            "semifinal": 35.21126760563381,
+            "final": 21.27659574468085,
+            "win": 9.523809523809524,
+            "type": "grey",
+            "level": "red",
+            "children":[
+                  {
+                    "name": "3rd Quarter Final Classified",
+                    "quarter": 56.49717514124294,
+                    "semifinal": 22.22222222222222,
+                    "final":  10.0,
+                    "win": 3.4482758620689653,
+                    "type": "steelblue",
+                    "level": "gray",
+                    "children":[
+                      {
+                        "name": "Wales",
+                        "level": "Red",
+                        "quarter": 68.02721088435374,
+                        "semifinal": 24.39024390243903,
+                        "final":  8.695652173913043,
+                        "win": 3.3333333333333335,
+                        "icon": "{% static "images/flags/wal.png" %}",
+                      },
+                      {
+                        "name": "Northern Ireland",
+                        "quarter": 33.33333333333333,
+                        "semifinal": 8.695652173913043,
+                        "final":  1.3333333333333335,
+                        "win": 0.3125,
+                        "icon": "{% static "images/flags/ni.png" %}",
+                                    },
+
+                    ]
+                  },
+                  {
+                    "name": "4th Quarter Final Classified",
+                    "quarter": 56.49717514124294,
+                    "semifinal": 22.22222222222222,
+                    "final":  10.0,
+                    "win": 3.4482758620689653,
+                    "type": "steelblue",
+                    "level": "pink",
+                    "children":[
+                      {
+                        "name": "Hungary",
+                        "quarter": 25.0,
+                        "semifinal": 11.11111111111111,
+                        "final":  3.44827586206896535,
+                        "win": 0.8333333333333334,
+                        "icon": "{% static "images/flags/hun.png" %}",
+                      },
+                      {
+                        "name": "Belgium",
+                        "quarter": 78.125,
+                        "semifinal": 57.47126436781609,
+                        "final": 32.25806451612903,
+                        "win": 12.820512820512823,
+                        "icon": "{% static "images/flags/bel.png" %}",
+                      },
+                    ]
+                  },
+                  
+                ]
+          }
+        ]
+      },
+      {
+        "name": "Finalist 2",
+        "quarter": 57.47126436781609,
+        "semifinal": 35.21126760563381,
+        "final": 21.27659574468085,
+        "win": 9.523809523809524,
+        "type": "grey",
+        "level": "red",
+        "children":[
+          {
+            "name": "Third Semi-Finalist Classified",
+            "parent": "Finalist 2",
+            "quarter": 57.47126436781609,
+            "semifinal": 35.21126760563381,
+            "final": 21.27659574468085,
+            "win": 9.523809523809524,
+            "type": "grey",
+            "level": "red",
+            "children":[
+                  {
+                    "name": "5th Quarter Final Classified",
+                    "quarter": 56.49717514124294,
+                    "semifinal": 22.22222222222222,
+                    "final":  10.0,
+                    "win": 3.4482758620689653,
+                    "type": "steelblue",
+                    "level": "gray",
+                    "children":[
+                      {
+                        "name": "Slovakia",
+                        "quarter": 15.625,
+                        "semifinal": 5.0,
+                        "final": 1.3333333333333335,
+                        "win": 0.4,
+                        "icon": "{% static "images/flags/svk.png" %}",
+                      },
+                      {
+                        "name": "Germany",
+                        "quarter": 84.03361344537815,
+                        "semifinal": 42.73504273504274,
+                        "final": 26.31578947368421,
+                        "win": 16.129032258064516,
+                        "icon": "{% static "images/flags/ger.png" %}",
+                      },
+
+                    ]
+                  },
+                  {
+                    "name": "6th Quarter Final Classified",
+                    "quarter": 56.49717514124294,
+                    "semifinal": 22.22222222222222,
+                    "final":  10.0,
+                    "win": 3.4482758620689653,
+                    "type": "steelblue",
+                    "level": "yellow",
+                    "children":[
+                      {
+                        "name": "Italy",
+                        "quarter": 37.878787878787875,
+                        "semifinal": 17.857142857142858,
+                        "final": 8.695652173913043,
+                        "win": 5.263157894736842,
+                        "icon": "{% static "images/flags/ita.png" %}",
+                      },
+                      {
+                        "name": "Spain",
+                        "quarter": 64.1025641025641,
+                        "semifinal": 35.46099290780142,
+                        "final": 21.27659574468085,
+                        "win": 13.88888888888889,
+                        "icon": "{% static "images/flags/spa.png" %}",
+                      },
+                    ]
+                  },
+
+
+                  
+                ]
+              },
+          {
+            "name": "Fourth Semi-Finalist Classified",
+            "parent": "Finalist 2",
+            "quarter": 57.47126436781609,
+            "semifinal": 35.21126760563381,
+            "final": 21.27659574468085,
+            "win": 9.523809523809524,
+            "type": "grey",
+            "level": "red",
+            "children":[
+                  {
+                    "name": "7th Quarter Final Classified",
+                    "quarter": 56.49717514124294,
+                    "semifinal": 22.22222222222222,
+                    "final":  10.0,
+                    "win": 3.4482758620689653,
+                    "type": "steelblue",
+                    "level": "gray",
+                    "children":[
+                      {
+                        "name": "France",
+                        "quarter": 83.33333333333334,
+                        "semifinal": 55.55555555555556,
+                        "final": 28.985507246376812,
+                        "win": 18.51851851851852,
+                        "icon": "{% static "images/flags/fra.png" %}",
+                      },
+                      {
+                        "name": "Rep Of Ireland",
+                        "quarter": 18.51851851851852,
+                        "semifinal": 6.666666666666667,
+                        "final": 1.6666666666666667,
+                        "win": 0.5555555555555556,
+                        "icon": "{% static "images/flags/ire.png" %}",
+                      },
+
+                    ]
+                  },
+                  {
+                    "name": "8th Quarter Final Classified",
+                    "quarter": 56.49717514124294,
+                    "semifinal": 22.22222222222222,
+                    "final":  10.0,
+                    "win": 3.4482758620689653,
+                    "type": "steelblue",
+                    "level": "yellow",
+                    "children":[
+                      {
+                        "name": "Iceland",
+                        "quarter": 21.27659574468085,
+                        "semifinal": 5.88235294117647,
+                        "final": 1.1764705882352942,
+                        "win": 0.5555555555555556,
+                        "icon": "{% static "images/flags/ice.png" %}",
+                      },
+                      {
+                        "name": "England",
+                        "quarter": 80.64516129032259,
+                        "semifinal": 35.46099290780142,
+                        "final": 13.88888888888889,
+                        "win": 9.090909090909092,
+                        "icon": "{% static "images/flags/spa.png" %}",
+                      },
+                    ]
+                  },
+                  
+                ]
+          }
+        ]
+      },
+
+  ]
+  }
+];
+
+// function play_against(Team1,Team2):
+root = treeData[0];
+var quarters = [];
+tamanho = root.children.length
+
+for(i = 0; i++; i< tamanho){
+  alert(root.children[i].quarter);
+  quarters.push(root.children[i].quarter);
+}
+
+root.x0 = height / 2;
+root.y0 = 0;
+  
+update2(root);
+
+/////////////////////////////////
+//
+//              FLAGS
+//
+/////////////////////////////////
+
+d3.csv("{% static "matches.csv" %}")
+    .row(function(d) { 
+      size = treeData[0].children.length;
+      for(i = 0; i++; i < size){
+        alert(treeData[0].children[i].name);
+        if(treeData[0].children[i].name == d.Team_1){
+          alert(d.Team_1);
+        }
+      }
+      return {Team_1: d.Team_1, Team_2: d.Team_2}; })
+    .get(function(error, rows) { console.log(rows); });
+
+// ************** Generate the tree diagram  *****************
+var margin = {top: 20, right: 120, bottom: 20, left: 120},
+  width = 960 - margin.right - margin.left,
+  height = 500 - margin.top - margin.bottom;
+  
+var i = 0;
+
+var tree = d3.layout.tree()
+  .size([height, width]);
+
+var tree1 = d3.layout.tree()
+  .size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+  .projection(function(d) { return [d.y, d.x]; });
+
+var svg = d3.select("body").append("svg")
+  .attr("width", width + margin.right + margin.left)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", 
+        "translate(" + margin.left + "," + margin.top + ")");
+
+
+root = treeData[0];
+update(root,tree);
+
+// root2 = treeData[1];
+// update(root2,tree1);
+
+
+
+function update(source,var_tree) {
+
+  // Compute the new tree layout.
+  var nodes = var_tree.nodes(root).reverse(),
+    links = var_tree.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Declare the nodes…
+  var node = svg.selectAll("g.node")
+    .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter the nodes.
+  var nodeEnter = node.enter().append("g")
+    .attr("class", "node")
+    .attr("transform", function(d) { 
+      return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeEnter.append("image")
+      .attr("xlink:href", function(d) { return d.icon; })
+      .attr("x", "-12px")
+      .attr("y", "-12px")
+      .attr("width", "24px")
+      .attr("height", "24px");
+
+  nodeEnter.append("text")
+    .attr("x", function(d) { 
+      return d.children || d._children ? 
+      (15) * -1 : + 15 })
+    .attr("dy", ".35em")
+    .attr("text-anchor", function(d) { 
+      return d.children || d._children ? "end" : "start"; })
+    .text(function(d) { return d.name; })
+    .style("fill-opacity", 1)
+    .style("fill","white");
+
+  // Declare the links…
+  var link = svg.selectAll("path.link")
+    .data(links, function(d) { return d.target.id; })
+    .attr("stroke-width", function(d) { return d.target.quarter/10; });
+
+  var c10 = d3.scale.category10();
+
+  // Enter the links.
+  link.enter().insert("path", "g")
+    .attr("class", "link")
+    .style("stroke", c10)
+    .attr("stroke-width", function(d) { return (d.target.value); })
+    .attr("d", diagonal);
+
+}
+
+</script>
+  
+  </body>
+</html>
