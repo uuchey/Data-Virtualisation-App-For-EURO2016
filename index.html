@@ -79,6 +79,15 @@ function update2(source) {
     .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
     .on("click", click)
     .on("mouseover",function(d){
+      if(d.depth == 4){
+        d.parent.quarter = d.semifinal;
+      }
+      if(d.depth == 3){
+        d.parent.quarter = d.final;
+      }
+      if(d.depth == 2){
+        d.parent.quarter = d.win;
+      }
       console.log(d);
     });
 
@@ -139,7 +148,7 @@ function update2(source) {
     .style("stroke-width", function(d) { return d.target.quarter/10; })
     .attr("d", function(d) {
     var o = {x: source.x0, y: source.y0};
-    return diagonal({source: o, target: o});
+      return diagonal({source: o, target: o});
     })
 
   // Transition links to their new position.
