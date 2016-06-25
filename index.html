@@ -94,19 +94,23 @@ closeNodes = function(root) {
 highlightOn = function(d) {
   var parentLine;
   parentLine = function(d) {
+    console.log(d.parent);
     if (d.parent) {
       parentLine(d.parent);
       highlightOff();
       svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
-      if(d.depth == 4){
-        d.parent.quarter = d.semifinal;
-      }
-      if(d.depth == 3){
-        d.parent.parent.quarter = d.final;
-      }
-      if(d.depth == 2){
-        d.parent.quarter = d.win;
-      }
+      // if(d.depth == 4){
+      //   d.parent.quarter = d.semifinal;
+      // }
+      // if(d.depth == 3){
+      //   d.parent.parent.quarter = d.final;
+      //   console.log(d.parent);
+      // }
+      // if(d.depth == 2){
+      //   d.parent.quarter = d.win;
+      //   console.log(d.parent);
+      // }
+      // console.log(d);
     }
   };
   parentLine(d);
