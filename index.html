@@ -96,20 +96,19 @@ highlightOn = function(d) {
   parentLine = function(d) {
     console.log(d.parent);
     if (d.parent) {
+      if(d.depth == 3){
+        d.parent.quarter = d.semifinal;
+      }
+      if(d.depth == 2){
+        d.parent.parent.quarter = d.final;
+      }
+      if(d.depth == 1){
+        d.parent.quarter = d.win;
+      }
       svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
       parentLine(d.parent);
       //highlightOff();
-      // if(d.depth == 4){
-      //   d.parent.quarter = d.semifinal;
-      // }
-      // if(d.depth == 3){
-      //   d.parent.parent.quarter = d.final;
-      //   console.log(d.parent);
-      // }
-      // if(d.depth == 2){
-      //   d.parent.quarter = d.win;
-      //   console.log(d.parent);
-      // }
+      
       // console.log(d);
     }
   };
