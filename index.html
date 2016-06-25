@@ -22,6 +22,15 @@
     stroke: #ccc;
     stroke-width: 2px;
   }
+
+  path.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  path.highlight {
+     stroke: firebrick;
+  }
   
     </style>
 
@@ -92,7 +101,7 @@ highlightOn = function(d) {
   parentLine = function(d) {
     if (d.parent) {
       parentLine(d.parent);
-      svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
+      svg2.selectAll("path.link.source-" + d.parent.name).classed('highlight', true);
     }
   };
   parentLine(d);
