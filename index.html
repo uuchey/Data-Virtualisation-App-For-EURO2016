@@ -145,19 +145,22 @@ function update2(source) {
       toggle(d);
       update2(d);
 
-      if(d.depth == 4){
-        d.parent.quarter = d.semifinal;
-      }
-      if(d.depth == 3){
-        d.parent.parent.quarter = d.final;
-        console.log(d.parent);
-      }
-      if(d.depth == 2){
-        d.parent.quarter = d.win;
-        console.log(d.parent);
-      }
-      console.log(d);
-    });
+      // if(d.depth == 4){
+      //   d.parent.quarter = d.semifinal;
+      // }
+      // if(d.depth == 3){
+      //   d.parent.parent.quarter = d.final;
+      //   console.log(d.parent);
+      // }
+      // if(d.depth == 2){
+      //   d.parent.quarter = d.win;
+      //   console.log(d.parent);
+      // }
+      // console.log(d);
+    })
+    .on("mouseout",function(d){
+      highlightOff(d);
+    });;
 
   nodeEnter.append("circle")
     .attr("r", 1e-6)
