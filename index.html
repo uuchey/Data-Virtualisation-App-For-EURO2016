@@ -216,7 +216,7 @@ function update2(source) {
   link.enter().insert("path", "g")
     .attr("class", function(d) {
       return "link source-" + d.source.name + " target-" + d.target.name;
-    }).
+    })
     .style("stroke", function(d) { return d.target.level; })
     .style("stroke-width", function(d) { return d.target.quarter/10; })
     .attr("target",)
