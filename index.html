@@ -189,7 +189,9 @@ function click(d) {
   //alert(d.name);
   console.log(d);
   console.log(d.parent);
+  console.log(d.parent.quarter);
   if (d.children) {
+    d.parent.quarter = d.semifinal;
     //alert("tem filhos");
     d._children = d.children;
     d.children = null;
