@@ -6,10 +6,10 @@
     <!-- for django template rendering 
     {% load staticfiles %}
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet">  -->
+    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet">-->
 
     <link href="css/bootstrap.min.css"  rel="stylesheet">
-    <link href="css/flag-icon.min.css" rel="stylesheet">
+    <link href="css/flag-icon.min.css" rel="stylesheet"> <!-- -->
 
     <title>EURO 2016</title>
 
@@ -38,7 +38,7 @@
 
   <body class="text-center">
     <div class="container text-center">
-       <img src="images/euro-logo.png" height="100"> 
+      <img src="images/euro-logo.png" height="100">
 
       <!-- <img src="{% static "images/euro-logo.png" %}" height="100"> -->
       <p class="lead text-info">Dynamic Interactive Data Visualization tool - UEFA 2016</p>
@@ -47,10 +47,12 @@
 
 
     <!-- load the d3.js library --> 
-    <script src="js/d3.min.js"></script> 
+    <script src="js/d3.min.js"></script>
     <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
 
     <script>
+
+    var gradient = ["#FFFFFF", "#DBBADB", "#B776B7", "#943294", "#4A194A", "#000000", "#11754D", "#23EB9B", "#87DB5A", "#EBCC1A", "#81897C", "#1846DE", "#846788", "#F08833", "#F6482B", "#FC0824"];
 
     var treeData = [
       {
@@ -62,11 +64,11 @@
             "type": "grey",
             "children":[
               {
-                "name": "Fisrt Semi-Finalist Classified",
+                "name": "Semi-Finalist1",
                 "type": "grey",
                 "children":[
                   {
-                    "name": "1st Quarter Final Classified",
+                    "name": "QuarterFinalist1",
                     "type": "grey",
                     "children":[
                       {
@@ -93,7 +95,7 @@
                     ]
                   },
                   {
-                    "name": "2nd Quarter Final Classified",
+                    "name": "QuarterFinalist",
                     "type": "grey",
                     "children":[
                       {
@@ -121,12 +123,12 @@
                 ]
               },
               {
-                "name": "Second Semi-Finalist Classified",
-                "parent": "Finalist 1",
+                "name": "Semi-Finalist2",
+                "parent": "Finalist1",
                 "type": "grey",
                 "children":[
                       {
-                        "name": "3rd Quarter Final Classified",
+                        "name": "QuarterFinalist3",
                         "type": "steelblue",
                         "children":[
                           {
@@ -151,7 +153,7 @@
                         ]
                       },
                       {
-                        "name": "4th Quarter Final Classified",
+                        "name": "4QuarterFinalist",
                         "type": "steelblue",
                         "children":[
                           {
@@ -184,12 +186,12 @@
             "type": "grey",
             "children":[
               {
-                "name": "Third Semi-Finalist Classified",
+                "name": "SemiFinalist3",
                 "parent": "Finalist2",
                 "type": "grey",
                 "children":[
                       {
-                        "name": "5th Quarter Final Classified",
+                        "name": "5QuarterFinalist",
                         "type": "steelblue",
                         "children":[
                           {
@@ -214,7 +216,7 @@
                         ]
                       },
                       {
-                        "name": "6th Quarter Final Classified",
+                        "name": "6QuarterFinalist",
                         "type": "steelblue",
                         "children":[
                           {
@@ -240,12 +242,12 @@
                 ]
               },
               {
-                "name": "Fourth Semi-Finalist Classified",
+                "name": "Semi-Finalist4",
                 "parent": "Finalist2",
                 "type": "grey",
                 "children":[
                       {
-                        "name": "7th Quarter Final Classified",
+                        "name": "7QuarterFinalist",
                         "children":[
                           {
                             "name": "France",
@@ -269,7 +271,7 @@
                         ]
                       },
                       {
-                        "name": "8th Quarter Final Classified",
+                        "name": "8QuarterFinalist",
                         "type": "blue",
                         "children":[
                           {
@@ -378,47 +380,28 @@
       return _results;
     };
 
+
+
+
     //highlight nodes
     highlightOn = function(d) {
       var parentLine;
+      alert("Meu pai é" + d.parent.name);
+      
+
       parentLine = function(d) {
-        console.log(d.parent);
+        alert(d.name);
         if (d.parent) {
-          if(d.depth == 3){
-            d.parent.quarter = d.semifinal;
-          }
-          if(d.depth == 2){
-            d.parent.quarter = d.final;
-          }
-          if(d.depth == 1){
-            d.parent.quarter = d.win;
-          }
-          svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
           parentLine(d.parent);
-          //highlightOff();
-          
-          // console.log(d);
-        }
-        if (d.children) {
-          if(d.depth == 3){
-            d.parent.quarter = d.semifinal;
-          }
-          if(d.depth == 2){
-            d.parent.quarter = d.final;
-          }
-          if(d.depth == 1){
-            d.parent.quarter = d.win;
-          }
-          svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
-          parentLine(d.parent);
-          //highlightOff();
-          
-          // console.log(d);
+          var l = svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);    
+          console.log(l);      
         }
       };
+
       parentLine(d);
       return update2(d);
     };
+
 
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false);
@@ -429,32 +412,10 @@
     function click(d) {
       //alert(d.name);
       if (d.children) {
-        if(d.depth == 4){
-          d.parent.quarter = d.semifinal;
-          console.log(d.semifinal);
-          console.log(d.parent.quarter);
-        }
-        if(d.depth == 3){
-          d.parent.quarter = d.final;
-        }
-        if(d.depth == 2){
-          d.parent.quarter = d.win;
-        }
         d._children = d.children;
         d.children = null;
       } 
       else {
-        if(d.depth == 4){
-          d.parent.quarter = d.semifinal;
-          console.log(d.semifinal);
-          console.log(d.parent.quarter);
-        }
-        if(d.depth == 3){
-          d.parent.quarter = d.final;
-        }
-        if(d.depth == 2){
-          d.parent.quarter = d.win;
-        }
         d.children = d._children;
         d._children = null;
       }
@@ -478,9 +439,14 @@
         .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
       // Enter any new nodes at the parent's previous position.
-      var nodeEnter = node.enter().append("g")
+      var nodeEnter = node.enter().append("svg:g")
         .attr("class", "node")
-        .attr("quarter", function(d) { return d.quarter; })
+        .attr("quarter", function(d) {  
+          if(d.quarter){
+            return d.quarter
+          }
+          // return d.quarter; 
+        })
         .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
@@ -491,24 +457,11 @@
             highlightOff(d);
             highlightOn(d);
           }
-          //toggle(d);
           update2(d);
-
-          if(d.depth == 4){
-            d.parent.quarter = d.semifinal;
-            console.log(d.parent.quarter);
-          }
-          // if(d.depth == 3){
-          //   d.parent.parent.quarter = d.final;
-          //   console.log(d.parent);
-          // }
-          // if(d.depth == 2){
-          //   d.parent.quarter = d.win;
-          //   console.log(d.parent);
-          // }
-          // console.log(d);
         })
-        .on("mouseout", function() { d3.event.stopPropagation(); });
+        .on("mouseout", function(d) { 
+          highlightOff(d)
+        });
 
         nodeEnter.append("circle")
           .style("fill", function(d) { return d._children ? "#7a8288" : "lightsteelblue"; })
@@ -532,7 +485,7 @@
       // Transition nodes to their new position.
       var nodeUpdate = node.transition()
         .duration(duration)
-        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
 
       nodeUpdate.select("circle")
         .attr("r", function(d) { return d._children ? 10 : 5; })
@@ -544,7 +497,7 @@
       // Transition exiting nodes to the parent's new position.
       var nodeExit = node.exit().transition()
         .duration(duration)
-        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; });
+        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; }).remove();
 
       nodeExit.select("circle")
         .attr("r", 1e-6);
@@ -557,92 +510,39 @@
         .data(links,
           function(d) { 
             return d.target.id; 
-          })
-        .attr("stroke-width", function(d) {
-          return d.target.quarter/10; 
-      });
-
-
-      // Enter any new links at the parent's previous position.
-      // link.enter().insert("path", "g")
-      //   .attr("class", function(d) {
-      //     return "link source-" + d.source.name + " target-" + d.target.name;
-      //   })
-      //   .style("stroke", function(d) { return d.target.level; })
-      //   .style("stroke-width", function(d) { return d.target.quarter/10; })
-      //   .attr("d", function(d) {
-      //   var o = {x: source.x0, y: source.y0};
-      //     return diagonal({source: o, target: o});
-      //   })
-
-      //   // .attr("d", function(d) {
-      //   //   var o;
-      //   //   o = {
-      //   //     x: source.x0,
-      //   //     y: source.y0
-      //   //   };
-      //   //   return diagonal({
-      //   //     source: o,
-      //   //     target: o
-      //   //   });
-      //   // })
-      //   transition().duration(duration).attr("d", diagonal);
-      //   link.transition().duration(duration).attr("d", diagonal);
-      //   link.exit().transition().duration(duration).attr("d", 
-      //     function(d) {
-      //         var o;
-      //         o = {
-      //           x: source.x,
-      //           y: source.y
-      //         };
-      //         return diagonal({
-      //           source: o,
-      //           target: o
-      //         });
-      //       }).remove();
-
-      //       return nodes.forEach(function(d) {
-      //         d.x0 = d.x;
-      //         return d.y0 = d.y;
-      //       })
+          });
         
-      //   .attr("d", function(d) {
-      //     var o = {x: source.x0, y: source.y0};
-      //       return diagonal({source: o, target: o});
-      //     })
-      //     .transition().duration(duration).attr("d", diagonal);
-          
-      //     link.transition().duration(duration).attr("d", diagonal);
-          
-      //     link.exit().transition().duration(duration).attr("d", function(d) {
-      //       var o;
-      //       o = {
-      //         x: source.x,
-      //         y: source.y
-      //       };
-      //   return diagonal({
-      //     source: o,
-      //     target: o
-      //   });
-      // }).remove();
-
-
-      link.enter().insert("path", "g")
+      link.enter().insert("svg:path", "g")
         .attr("class", function(d) {
           return "link source-" + d.source.name + " target-" + d.target.name;
         }).
         style("stroke", function(d) { return d.target.level; })
         .style("stroke-width", function(d) { return d.target.quarter/10; })
+        .on("mouseover",function(d){
+          highlightOn(d);
+          if (d3.event.metaKey) {
+            highlightOn(d);
+          } else {
+            highlightOff(d);
+            highlightOn(d);
+          }
+          update2(d);
+        })
+        .on("mouseout", function(d) { 
+          highlightOff(d)
+        })
         .attr("d", function(d) {
         var o = {x: source.x0, y: source.y0};
           return diagonal({source: o, target: o});
-        });
+        }).transition().duration(duration).attr("d", diagonal);;
 
       // Transition links to their new position.
       link.transition()
         .duration(duration)
         .attr("d", diagonal)
-        .style("stroke-width", function(d) { return d.target.quarter/10; });
+        .style("stroke-width", function(d) { 
+          return d.target.quarter/10; 
+        });
 
       // Transition exiting nodes to the parent's new position.
       link.exit().transition()
