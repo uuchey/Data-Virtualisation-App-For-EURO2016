@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
 
-    <!-- for django template rendering 
+    <!-- for django template rendering -->
     {% load staticfiles %}
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet"> -->
+    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet">
 
-    <link href="css/bootstrap.min.css"  rel="stylesheet">
-    <link href="css/flag-icon.min.css" rel="stylesheet">
+    <!-- <link href="css/bootstrap.min.css"  rel="stylesheet">
+    <link href="css/flag-icon.min.css" rel="stylesheet"> -->
 
     <title>EURO 2016</title>
 
@@ -38,16 +38,16 @@
 
   <body class="text-center">
     <div class="container text-center">
-      <img src="images/euro-logo.png" height="100">
+      <!-- <img src="images/euro-logo.png" height="100"> -->
 
-      <!-- <img src="{% static "images/euro-logo.png" %}" height="100"> -->
+      <img src="{% static "images/euro-logo.png" %}" height="100">
       <p class="lead text-info">Dynamic Interactive Data Visualization tool - UEFA 2016</p>
       <p class="text-warning">Probability Data collected from BetFair</p>
     </div>
 
 
     <!-- load the d3.js library --> 
-    <script src="js/d3.min.js"></script>
+    <!-- <script src="js/d3.min.js"></script> -->
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <script>
@@ -411,7 +411,7 @@
           }
           svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
           parentLine(d.parent);
-          //highlightOff();
+          highlightOff();
           
           // console.log(d);
         }
@@ -553,72 +553,89 @@
 
       // Update the links…
       var link = svg2.selectAll("path.link")
-        .data(links)
-        .attr("d", d3.svg.diagonal().projection(
+        .data(links,
           function(d) { 
-            return [o.x(d), o.y(d)]; 
-          }
-        )
-      );
+            return d.target.id; 
+          })
+        .attr("stroke-width", function(d) {
+          return d.target.quarter/10; 
+      });
 
 
       // Enter any new links at the parent's previous position.
+      // link.enter().insert("path", "g")
+      //   .attr("class", function(d) {
+      //     return "link source-" + d.source.name + " target-" + d.target.name;
+      //   })
+      //   .style("stroke", function(d) { return d.target.level; })
+      //   .style("stroke-width", function(d) { return d.target.quarter/10; })
+      //   .attr("d", function(d) {
+      //   var o = {x: source.x0, y: source.y0};
+      //     return diagonal({source: o, target: o});
+      //   })
+
+      //   // .attr("d", function(d) {
+      //   //   var o;
+      //   //   o = {
+      //   //     x: source.x0,
+      //   //     y: source.y0
+      //   //   };
+      //   //   return diagonal({
+      //   //     source: o,
+      //   //     target: o
+      //   //   });
+      //   // })
+      //   transition().duration(duration).attr("d", diagonal);
+      //   link.transition().duration(duration).attr("d", diagonal);
+      //   link.exit().transition().duration(duration).attr("d", 
+      //     function(d) {
+      //         var o;
+      //         o = {
+      //           x: source.x,
+      //           y: source.y
+      //         };
+      //         return diagonal({
+      //           source: o,
+      //           target: o
+      //         });
+      //       }).remove();
+
+      //       return nodes.forEach(function(d) {
+      //         d.x0 = d.x;
+      //         return d.y0 = d.y;
+      //       })
+        
+      //   .attr("d", function(d) {
+      //     var o = {x: source.x0, y: source.y0};
+      //       return diagonal({source: o, target: o});
+      //     })
+      //     .transition().duration(duration).attr("d", diagonal);
+          
+      //     link.transition().duration(duration).attr("d", diagonal);
+          
+      //     link.exit().transition().duration(duration).attr("d", function(d) {
+      //       var o;
+      //       o = {
+      //         x: source.x,
+      //         y: source.y
+      //       };
+      //   return diagonal({
+      //     source: o,
+      //     target: o
+      //   });
+      // }).remove();
+
+
       link.enter().insert("path", "g")
         .attr("class", function(d) {
           return "link source-" + d.source.name + " target-" + d.target.name;
-        })
-        .attr("d", function(d) {
-          var o;
-          o = {
-            x: source.x0,
-            y: source.y0
-          };
-          return diagonal({
-            source: o,
-            target: o
-          });
-        })
-        .attr("stroke-width", function(d) {
-          return d.target.quarter/10; 
-        })
-
-        .transition().duration(duration).attr("d", diagonal);
-        link.transition().duration(duration).attr("d", diagonal);
-        link.exit().transition().duration(duration).attr("d", 
-          function(d) {
-              var o;
-              o = {
-                x: source.x,
-                y: source.y
-              };
-              return diagonal({
-                source: o,
-                target: o
-              });
-            }).remove();
-
-            return nodes.forEach(function(d) {
-              d.x0 = d.x;
-              return d.y0 = d.y;
-            })
-        .style("stroke", function(d) { return d.target.level; })
+        }).
+        style("stroke", function(d) { return d.target.level; })
         .style("stroke-width", function(d) { return d.target.quarter/10; })
         .attr("d", function(d) {
         var o = {x: source.x0, y: source.y0};
           return diagonal({source: o, target: o});
-        }).transition().duration(duration).attr("d", diagonal);
-      link.transition().duration(duration).attr("d", diagonal);
-      link.exit().transition().duration(duration).attr("d", function(d) {
-        var o;
-        o = {
-          x: source.x,
-          y: source.y
-        };
-        return diagonal({
-          source: o,
-          target: o
-        });
-      }).remove();
+      });
 
       // Transition links to their new position.
       link.transition()
@@ -632,8 +649,7 @@
         .attr("d", function(d) {
         var o = {x: source.x, y: source.y};
         return diagonal({source: o, target: o});
-        })
-        .remove();
+        });
 
       // Stash the old positions for transition.
       return nodes.forEach(function(d) {
