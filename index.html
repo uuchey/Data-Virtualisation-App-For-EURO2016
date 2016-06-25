@@ -94,7 +94,6 @@ closeNodes = function(root) {
 highlightOn = function(d) {
   var parentLine;
   parentLine = function(d) {
-    console.log(d.parent);
     if (d.parent) {
       parentLine(d.parent);
       highlightOff();
@@ -104,13 +103,10 @@ highlightOn = function(d) {
       }
       if(d.depth == 3){
         d.parent.parent.quarter = d.final;
-        console.log(d.parent);
       }
       if(d.depth == 2){
         d.parent.quarter = d.win;
-        console.log(d.parent);
       }
-      console.log(d);
     }
   };
   parentLine(d);
