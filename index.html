@@ -84,6 +84,8 @@ function searchTree(obj,search,path){
   }
 }
 
+console.log(searchTree("France"));
+
 
 
 function update2(source) {
@@ -108,7 +110,6 @@ function update2(source) {
     .on("mouseover",function(d){
       if(d.depth == 4){
         d.parent.quarter = d.semifinal;
-        console.log(searchTree(d.parent.name));
       }
       if(d.depth == 3){
         d.parent.parent.quarter = d.final;
