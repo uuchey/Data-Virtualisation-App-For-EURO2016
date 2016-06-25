@@ -51,7 +51,7 @@
     var treeDynamic = d3.layout.tree()
       .size([height, width]);
 
-    var diagonal = d3.svg.vertical()
+    var diagonal = d3.svg.dagonal()
       .projection(function(d) { return [d.y, d.x]; });
 
 var svg2 = d3.select("body").append("svg")
