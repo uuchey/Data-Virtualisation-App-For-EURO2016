@@ -99,6 +99,7 @@ closeNodes = function(root) {
 highlightOn = function(d) {
   var parentLine;
   parentLine = function(d) {
+    console.log(d.parent);
     if (d.parent) {
       parentLine(d.parent);
       svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
