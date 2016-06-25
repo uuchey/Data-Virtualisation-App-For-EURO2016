@@ -188,6 +188,7 @@ function searchTree(obj,search,path){
 function click(d) {
   //alert(d.name);
   console.log(d);
+  console.log(d.parent);
   if (d.children) {
     //alert("tem filhos");
     d._children = d.children;
@@ -195,6 +196,7 @@ function click(d) {
   } 
   else {
     d.parent.quarter = d.semifinal;
+    console.log(d.parent.quarter);
     //alert("nao tem filhos");
     // console.log(d.children.semifinal)
     // d.attr("stroke-width",d.semifinal)
