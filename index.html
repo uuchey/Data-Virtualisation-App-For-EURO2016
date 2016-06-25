@@ -59,6 +59,33 @@ var svg2 = d3.select("body").append("svg")
   .attr("id","sem_bandeira")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
+//basically a way to get the path to an object
+function searchTree(obj,search,path){
+  if(obj.name === search){ //if search is found return, add the object to the path and return it
+    path.push(obj);
+    return path;
+  }
+  else if(obj.children || obj._children){ //if children are collapsed d3 object will have them instantiated as _children
+    var children = (obj.children) ? obj.children : obj._children;
+    for(var i=0;i<children.length;i++){
+      path.push(obj);// we assume this path is the right one
+      var found = searchTree(children[i],search,path);
+      if(found){// we were right, this should return the bubbled-up path from the first if statement
+        return found;
+      }
+      else{//we were wrong, remove this parent from the path and continue iterating
+        path.pop();
+      }
+    }
+  }
+  else{//not the right object, return false so it will continue to iterate in the loop
+    return false;
+  }
+}
+
+
+
 function update2(source) {
 
   // Compute the new tree layout.
@@ -82,6 +109,7 @@ function update2(source) {
       if(d.depth == 4){
         d.parent.quarter = d.semifinal;
         console.log(d.parent);
+        console.log(searchTree(d.parent.name));
       }
       if(d.depth == 3){
         d.parent.quarter = d.final;
