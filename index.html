@@ -92,16 +92,16 @@ highlightOn = function(d) {
   parentLine = function(d) {
     if (d.parent) {
       parentLine(d.parent);
-      vis.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
+      svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);
     }
   };
   parentLine(d);
-  return update(d);
+  return update2(d);
 };
 
 highlightOff = function(d) {
-  vis.selectAll("path.link").classed('highlight', false);
-  return update(d);
+  svg2.selectAll("path.link").classed('highlight', false);
+  return update2(d);
 };
 
 
