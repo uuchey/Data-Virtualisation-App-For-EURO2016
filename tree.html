@@ -1,0 +1,42 @@
+<!DOCTYPE html> <meta charset="utf-8">
+<html>
+<head>
+    <title>Tree Test</title>
+    {% load staticfiles %}
+    <script src="{% static "js/d3.min.js" %}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static "css/treetest.css" %}">
+
+
+    <style>
+  
+      .node circle {
+        cursor: pointer;
+        fill: #fff;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+      }
+
+      .node text {
+        font-size: 11px;
+      }
+
+      path.link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;
+      }
+
+      path.highlight {
+         stroke: firebrick;
+      }
+
+    </style>
+
+</head>
+<body>
+  <div id="body">
+  </div>
+</body>
+</html>
+<script src="{% static "js/treetest.js" %}"></script>
