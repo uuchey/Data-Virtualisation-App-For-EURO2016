@@ -187,18 +187,19 @@ function searchTree(obj,search,path){
 // Toggle children on click.
 function click(d) {
   //alert(d.name);
-  console.log(d);
-  console.log(d.parent);
-  console.log(d.parent.quarter);
+  console.log(d.depth);
   if (d.children) {
-    d.parent.quarter = d.semifinal;
-    //alert("tem filhos");
+    if(d.depth == 2):
+      d.parent.quarter = d.semifinal;
+    if(d.depth == 1):
+      d.parent.quarter = d.final;
+    if(d.depth == 0):
+      d.parent.quarter = d.win;
     d._children = d.children;
     d.children = null;
   } 
   else {
     d.parent.quarter = d.semifinal;
-    console.log(d.parent.quarter);
     //alert("nao tem filhos");
     // console.log(d.children.semifinal)
     // d.attr("stroke-width",d.semifinal)
