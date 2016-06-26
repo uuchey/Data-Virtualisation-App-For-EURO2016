@@ -694,8 +694,7 @@
         // Transition exiting nodes to the parent's new position.
         var nodeExit = node.exit().transition()
           .duration(duration)
-          .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; }).remove();
-
+          .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; });
 
         nodeExit.select("circle")
           .attr("r", 1e-6);
