@@ -450,12 +450,8 @@
       .style("z-index", "10")
       .style("visibility", "hidden")
       .text(function(d){ return d.quarter ;})
-      .append("image")
-      .attr("xlink:href", function(d) { return d.icon; })
-      .attr("x", "-12px")
-      .attr("y", "-12px")
-      .attr("width", "24px")
-      .attr("height", "24px");
+      
+
 
     var svg2 = d3.select("#area")
       .append("svg")
@@ -644,7 +640,9 @@
           
           div.html(
               "Team: " + team_name2 + "<br/>" + 
-              "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %"
+              "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %" +
+              "<img src=" + function(d) { return d.icon; })
+              + ">"
             )
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
