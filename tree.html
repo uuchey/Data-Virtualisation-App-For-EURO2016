@@ -689,7 +689,10 @@
           .style("fill", function(d) { return d._children ? "lightsteelblue" : "#7a8288"; });
 
         nodeUpdate.select("text")
-          .style("fill-opacity", 1);
+          .style("fill-opacity", 1)
+
+        nodeUpdate.select("image")
+          .style("display","block");
 
         // Transition exiting nodes to the parent's new position.
         var nodeExit = node.exit().transition()
