@@ -442,7 +442,6 @@
     //projection
     var diagonal = d3.svg.diagonal()
       .projection(function(d) { return [width - d.y, d.x]; });
-    };
 
     var tooltip = d3.select("#area")
       .append("div")
