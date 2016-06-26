@@ -116,10 +116,10 @@
     <div class="container text-center">
       <h3>Probabilities</h3>
         <div class="row" id="probabilities">
-          <div id="win_probability" class="col-md-3"><h3 class="text-danger">Win: </h3><span></span></div>
-          <div id="final_probability" class="col-md-3"><h3 class="text-warning">Final: </h3><span></span></div>
-          <div id="semifinal_probability" class="col-md-3"><h3 class="text-success">Semifinal: </h3><span></span></div>
-          <div id="quarter_probability" class="col-md-3"><h3 class="text-info">Quarter Final: </h3><span></span></div>
+          <div id="win_probability" class="col-md-3"><h3 class="text-danger">Be the Winner: </h3><span></span></div>
+          <div id="final_probability" class="col-md-3"><h3 class="text-warning">Go to Final: </h3><span></span></div>
+          <div id="semifinal_probability" class="col-md-3"><h3 class="text-success">Go to Semifinal: </h3><span></span></div>
+          <div id="quarter_probability" class="col-md-3"><h3 class="text-info">Go to Quarter Finals: </h3><span></span></div>
       </div>
       <div class="jumbotron" id="area">
       </div>
@@ -498,6 +498,7 @@
 
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false);
+      $("#probabilities > span").text("");
       return update2(d);
     };
 
