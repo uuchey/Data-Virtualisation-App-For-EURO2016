@@ -493,10 +493,10 @@
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
             //console.log(percentages);
-            $("#quarter_probability span").text(parseFloat(percentages[0].toFixed(2)) + "%");
-            $("#semifinal_probability span").text(parseFloat(percentages[1].toFixed(2)) + "%");
-            $("#final_probability span").text(parseFloat(percentages[2].toFixed(2)) + "%");
-            $("#win_probability span").text(parseFloat(percentages[3].toFixed(2)) + "%");
+            $("#quarter_probability .span").text(parseFloat(percentages[0].toFixed(2)) + "%");
+            $("#semifinal_probability .span").text(parseFloat(percentages[1].toFixed(2)) + "%");
+            $("#final_probability .span").text(parseFloat(percentages[2].toFixed(2)) + "%");
+            $("#win_probability .span").text(parseFloat(percentages[3].toFixed(2)) + "%");
           }
           else{
             $(".span").text(" ");
