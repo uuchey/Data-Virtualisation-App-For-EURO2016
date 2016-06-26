@@ -627,7 +627,22 @@
           .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
           .text(function(d) { return d.name; })
           .style("fill-opacity", 1e-6)
-          .style("fill","white");
+          .style("fill",function(d){
+            if(d.depth == 3){
+              return "#5bc0de";
+            }
+            if(d.depth == 2){
+              return "#62c462";
+            }if(d.depth == 1){
+              return "#ee5f5b"
+            }
+            if(d.depth == 0){
+              return "#f89406";
+            }
+            else{
+              return "white";
+            }
+          });
 
         // Transition nodes to their new position.
         var nodeUpdate = node.transition()
