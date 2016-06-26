@@ -6,9 +6,8 @@
      <!-- for django template rendering 
     {% load staticfiles %}
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet"> -->
+    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet"> 
 
-    <!--
      -->
     <link href="css/bootstrap.min.css"  rel="stylesheet">
     <title>EURO 2016</title>
@@ -88,10 +87,10 @@
     </div>
 
     <!-- load the d3.js library -->
-    
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="js/d3.min.js"></script>
 
-    <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+    
 
     <script>
 
@@ -498,70 +497,86 @@
             return d.quarter;
           }
         })
+        .attr({
+          quarter: function (d) { 
+            team_name = d.name;
+            if(d.depth == 3){
+              team1 = d.children[0].quarter;
+              team2 = d.children[1].quarter;
+              if(team1 > team2){
+                d.title = d.children[0].name;
+                d.quarter = d.children[0].semifinal;
+                d.final = d.children[0].final;
+                d.win = d.children[0].win;
+              }else{
+                d.title = d.children[1].name;
+                d.quarter = d.children[1].semifinal;
+                d.final = d.children[1].final;
+                d.win = d.children[1].win;
+              }
+              team_name = d.title;
+              return d.quarter;
+            }
+            else{
+              if(d.depth != 4){
+                team1 = d.children[0].quarter;
+                team2 = d.children[1].quarter;
+                if(team1 > team2){
+                  d.title = d.children[0].title;
+                  d.quarter = d.children[0].final;
+                  d.final = d.children[0].final;
+                  d.win = d.children[0].win;
+                }else{
+                  d.title = d.children[1].title;
+                  d.quarter = d.children[1].final;
+                  d.final = d.children[0].final;
+                  d.win = d.children[0].win;
+                }
+                team_name = d.title;
+                return d.quarter;
+              } 
+            }
+          }
+        })
         .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
-          team_name = d.name;
-          if(d.depth == 3){
-            team1 = d.children[0].quarter;
-            team2 = d.children[1].quarter;
-            if(team1 > team2){
-              d.title = d.children[0].name;
-              d.quarter = d.children[0].semifinal;
-              d.final = d.children[0].final;
-              d.win = d.children[0].win;
-            }else{
-              d.title = d.children[1].name;
-              d.quarter = d.children[1].semifinal;
-              d.final = d.children[1].final;
-              d.win = d.children[1].win;
-            }
-            team_name = d.title;
-          }
-          if(d.depth == 2){
-            team1 = d.children[0].quarter;
-            team2 = d.children[1].quarter;
-            if(team1 > team2){
-              d.title = d.children[0].title;
-              d.quarter = d.children[0].final;
-              d.final = d.children[0].final;
-              d.win = d.children[0].win;
-            }else{
-              d.title = d.children[1].title;
-              d.quarter = d.children[1].final;
-              d.final = d.children[0].final;
-              d.win = d.children[0].win;
-            }
-            team_name = d.title;
-          }
-          if(d.depth == 1){
-            team1 = d.children[0].quarter;
-            team2 = d.children[1].quarter;
-            if(team1 > team2){
-              d.title = d.children[0].title;
-              d.quarter = d.children[0].win;
-              d.final = d.children[0].final;
-              d.win = d.children[0].win;
-            }else{
-              d.title = d.children[1].title;
-              d.quarter = d.children[1].win;
-              d.final = d.children[0].final;
-              d.win = d.children[0].win;
-            }
-            team_name = d.title;
-          }
-          if(d.depth == 0){
-            team1 = d.children[0].quarter;
-            team2 = d.children[1].quarter;
-            if(team1 > team2){
-              d.title = d.children[0].title;
-              d.quarter = d.children[0].quarter;
-            }else{
-              d.title = d.children[1].title;
-              d.quarter = d.children[1].quarter;
-            }
-            team_name = d.title;
-          }
+          // team_name = d.name;
+          // if(d.depth == 3){
+          //   team1 = d.children[0].quarter;
+          //   team2 = d.children[1].quarter;
+          //   if(team1 > team2){
+          //     d.title = d.children[0].name;
+          //     d.quarter = d.children[0].semifinal;
+          //     d.final = d.children[0].final;
+          //     d.win = d.children[0].win;
+          //   }else{
+          //     d.title = d.children[1].name;
+          //     d.quarter = d.children[1].semifinal;
+          //     d.final = d.children[1].final;
+          //     d.win = d.children[1].win;
+          //   }
+          //   team_name = d.title;
+          // }
+          // else{
+          //   if(d.depth != 4){
+          //     team1 = d.children[0].quarter;
+          //     team2 = d.children[1].quarter;
+          //     if(team1 > team2){
+          //       d.title = d.children[0].title;
+          //       d.quarter = d.children[0].final;
+          //       d.final = d.children[0].final;
+          //       d.win = d.children[0].win;
+          //     }else{
+          //       d.title = d.children[1].title;
+          //       d.quarter = d.children[1].final;
+          //       d.final = d.children[0].final;
+          //       d.win = d.children[0].win;
+          //     }
+          //     team_name = d.title;
+          //   } 
+          // }
+
           highlightOn(d);
           if (d3.event.metaKey) {
             highlightOn(d);
@@ -572,11 +587,11 @@
           update2(d);
           
           div.transition()
-          .duration(200)
+          .duration(300)
           .style("opacity", .9);
           
           div.html(
-              "Team: " + team_name + "<br/>" + 
+              "Team: " + d.title + "<br/>" + 
               "Probability: " + d.quarter + "<br/>"
             )
             .style("left", (d3.event.pageX) + "px")
