@@ -570,9 +570,7 @@
             return d.quarter;
           }
         })
-        .attr({
-          "quarter",
-          function (d) { 
+        .attr({quarter:function (d) { 
             team_name = d.name;
             if(d.depth == 3){
               team1 = d.children[0].quarter;
