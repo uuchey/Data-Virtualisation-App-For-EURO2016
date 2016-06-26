@@ -635,14 +635,13 @@
           update2(d);
           
           div.transition()
-          .duration(300)
-          .style("opacity", .9);
+            .duration(300)
+            .style("opacity", .9);
           
           div.html(
               "Team: " + team_name2 + "<br/>" + 
               "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %" +
-              "<img src=" + d.icon
-              + ">"
+              "<image xmlns=" + d.icon + ">"
             )
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
@@ -719,12 +718,14 @@
         nodeExit.select("image")
           .style("display","none");
 
+
         // Update the links…
         var link = svg2.selectAll("path.link")
           .data(links,
             function(d) { 
               return d.target.id; 
         });
+
         
         link.enter().insert("svg:path", "g")
           .attr("class", function(d) {
