@@ -527,12 +527,19 @@
                   d.quarter = d.children[0].final;
                   d.final = d.children[0].final;
                   d.win = d.children[0].win;
+                  if(d.depth == 1 || d.depth == 0){
+                    d.quarter = d.win;
+                  }
                 }else{
                   d.title = d.children[1].title;
                   d.quarter = d.children[1].final;
-                  d.final = d.children[0].final;
-                  d.win = d.children[0].win;
+                  d.final = d.children[1].final;
+                  d.win = d.children[1].win;
+                  if(d.depth == 1 || d.depth == 0){
+                    d.quarter = d.win;
+                  }
                 }
+
                 team_name = d.title;
                 return d.quarter;
               } 
@@ -547,41 +554,6 @@
           } else { 
             team_name2 = d.title;
           }
-          // if(d.depth == 3){
-          //   team1 = d.children[0].quarter;
-          //   team2 = d.children[1].quarter;
-          //   if(team1 > team2){
-          //     d.title = d.children[0].name;
-          //     d.quarter = d.children[0].semifinal;
-          //     d.final = d.children[0].final;
-          //     d.win = d.children[0].win;
-          //   }else{
-          //     d.title = d.children[1].name;
-          //     d.quarter = d.children[1].semifinal;
-          //     d.final = d.children[1].final;
-          //     d.win = d.children[1].win;
-          //   }
-          //   team_name = d.title;
-          // }
-          // else{
-          //   if(d.depth != 4){
-          //     team1 = d.children[0].quarter;
-          //     team2 = d.children[1].quarter;
-          //     if(team1 > team2){
-          //       d.title = d.children[0].title;
-          //       d.quarter = d.children[0].final;
-          //       d.final = d.children[0].final;
-          //       d.win = d.children[0].win;
-          //     }else{
-          //       d.title = d.children[1].title;
-          //       d.quarter = d.children[1].final;
-          //       d.final = d.children[0].final;
-          //       d.win = d.children[0].win;
-          //     }
-          //     team_name = d.title;
-          //   } 
-          // }
-
           highlightOn(d);
           if (d3.event.metaKey) {
             highlightOn(d);
