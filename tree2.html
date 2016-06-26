@@ -439,30 +439,9 @@
     var treeDynamic = d3.layout.tree()
       .size([height, width]);
 
+    //projection
     var diagonal = d3.svg.diagonal()
       .projection(function(d) { return [width - d.y, d.x]; });
-
-    var orientations = {
-      // "top-to-bottom": {
-      //   size: [width, height],
-      //   x: function(d) { return d.x; },
-      //   y: function(d) { return d.y; }
-      // },
-      "right-to-left": {
-        size: [height, width],
-        x: function(d) { return width - d.y; },
-        y: function(d) { return d.x; }
-      },
-      // "bottom-to-top": {
-      //   size: [width, height],
-      //   x: function(d) { return d.x; },
-      //   y: function(d) { return height - d.y; }
-      // },
-      // "left-to-right": {
-      //   size: [height, width],
-      //   x: function(d) { return d.y; },
-      //   y: function(d) { return d.x; }
-      // }
     };
 
     var tooltip = d3.select("#area")
@@ -593,7 +572,8 @@
           }
         })
         .attr({
-          quarter: function (d) { 
+          "quarter",
+          function (d) { 
             team_name = d.name;
             if(d.depth == 3){
               team1 = d.children[0].quarter;
@@ -633,14 +613,13 @@
                     d.quarter = d.win;
                   }
                 }
-
                 team_name = d.title;
                 return d.quarter;
               } 
             }
           }
         })
-        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+        .attr("transform", function(d) { return "translate(" + source.x0 + "," + source.y0 + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
           if(d.depth == 4){ 
