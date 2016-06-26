@@ -97,10 +97,10 @@
     </div>
     <div class="container text-center">
       <p>Probabilities</p>
-      <div id="quarter_probability">Quarter Final:<span>10</span></div>
-      <div id="semifinal_probability">Semifinal: <span>10</span></div>
-      <div id="final_probability">Final: <span>10</span></div>
-      <div id="win_probability">Win: <span>10</span></div>
+      <div id="quarter_probability">Quarter Final: <span></span></div>
+      <div id="semifinal_probability">Semifinal: <span></span></div>
+      <div id="final_probability">Final: <span></span></div>
+      <div id="win_probability">Win: <span></span></div>
     </div>
 
     <!-- load the jquery and d3.js libraries
@@ -463,10 +463,10 @@
           } 
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
-            $("#quarter_probability").text(percentages[0]);
-            $("#quarter_probability").text(percentages[1]);
-            $("#quarter_probability").text(percentages[2]);
-            $("#quarter_probability").text(percentages[3]);
+            $("#quarter_probability span").text(parseFloat(percentages[0].toFixed(2)) + "%");
+            $("#quarter_probability span").text(parseFloat(percentages[1].toFixed(2)) + "%");
+            $("#quarter_probability span").text(parseFloat(percentages[2].toFixed(2)) + "%");
+            $("#quarter_probability span").text(parseFloat(percentages[3].toFixed(2)) + "%");
           }
         }
       };
