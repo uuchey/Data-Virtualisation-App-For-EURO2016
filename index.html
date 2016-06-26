@@ -10,7 +10,7 @@
 
      -->
     <link href="css/bootstrap.min.css"  rel="stylesheet">
-    <title>EURO 2016</title>
+    <title>EURO 2016 - Data Visualization using D3.js</title>
 
 
     <style>
@@ -18,6 +18,14 @@
           fill: black;
           stroke: black;
           stroke-width: 1px;
+        }
+
+        .span{
+          min-height: 30px;
+        }
+
+        img{
+          margin: 8px;
         }
 
         .lead{
@@ -34,8 +42,8 @@
 
         .link text {
             font: 10px sans-serif;
-            color: black !important;
-            /*display: none;*/
+            fill: black;
+            display: none;
         }
 
         path.highlight {
@@ -84,27 +92,56 @@
           left: 0;
         }
     </style>
+    <!-- load the jquery and d3.js libraries
+    <script src="http://d3js.org/d3.v3.min.js"></script>-->
+    <script src="js/d3.min.js"></script>
+    <script src="js/jquery.min.js"></script>
 
   </head>
 
   <body class="text-center">
     <div class="container text-center">
-      <img src="images/euro-logo.png" height="100">
+      <div class="row">
+        <div class="col-md-4 text-right">
+          <img src="images/euro-logo.png" height="60">
+        </div>
+        <div class="w-col-md-8">
+          <h1 class="lead text-info text-left">Dynamic Interactive Data Visualization tool - UEFA 2016</h1>
+          <p class="text-primary text-left">Data collected from BetFair.com</p>
+          <p>Hover over the flags to show its possible path and the probabilities of reaching each fixture.</p>
+          <p>Hover over the fixture node to show the most likely team to be its winner.</p>
+        </div>
+      </row>
+      
 
       <!-- <img src="{% static "images/euro-logo.png" %}" height="100"> -->
-      <p class="lead text-info">Dynamic Interactive Data Visualization tool - UEFA 2016</p>
-      <p class="text-warning">Probability Data collected from BetFair</p>
+      
+    </div>
+    <div class="container text-center">
+      <h3>Probabilities</h3>
+        <div class="row" id="probabilities">
+          <div id="win_probability" class="col-md-3">
+            <h4 class="text-danger">Win: </h4>
+            <div class="span lead text-danger"></div>
+          </div>
+          <div id="final_probability" class="col-md-3">
+            <h4 class="text-warning">Go to Final: </h4>
+            <div class="span lead text-warning"></div>
+          </div>
+          <div id="semifinal_probability" class="col-md-3">
+            <h4 class="text-success">Go to Semifinal: </h4>
+            <div class="span lead text-success"></div>
+          </div>
+          <div id="quarter_probability" class="col-md-3">
+            <h4 class="text-info">Go to Quarter Finals: </h4>
+            <div class="span lead text-info"></div>
+          </div>
+      </div>
+      <div class="jumbotron" id="area">
+      </div>
     </div>
 
-    <!-- load the d3.js library -->
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="js/d3.min.js"></script>
-
-    
-
     <script>
-
-    var gradient = ["#FFFFFF", "#DBBADB", "#B776B7", "#943294", "#4A194A", "#000000", "#11754D", "#23EB9B", "#87DB5A", "#EBCC1A", "#81897C", "#1846DE", "#846788", "#F08833", "#F6482B", "#FC0824"];
 
     //the data
     var treeData = [
@@ -148,7 +185,7 @@
                     ]
                   },
                   {
-                    "name": "QuarterFinalist",
+                    "name": "QuarterFinalist2",
                     "type": "grey",
                     "children":[
                       {
@@ -206,7 +243,7 @@
                         ]
                       },
                       {
-                        "name": "4QuarterFinalist",
+                        "name": "QuarterFinalist4",
                         "type": "steelblue",
                         "children":[
                           {
@@ -244,7 +281,7 @@
                 "type": "grey",
                 "children":[
                       {
-                        "name": "5QuarterFinalist",
+                        "name": "QuarterFinalist5",
                         "type": "steelblue",
                         "children":[
                           {
@@ -269,7 +306,7 @@
                         ]
                       },
                       {
-                        "name": "6QuarterFinalist",
+                        "name": "QuarterFinalist6",
                         "type": "steelblue",
                         "children":[
                           {
@@ -300,7 +337,7 @@
                 "type": "grey",
                 "children":[
                       {
-                        "name": "7QuarterFinalist",
+                        "name": "QuarterFinalist7",
                         "children":[
                           {
                             "name": "France",
@@ -324,7 +361,7 @@
                         ]
                       },
                       {
-                        "name": "8QuarterFinalist",
+                        "name": "QuarterFinalist8",
                         "type": "blue",
                         "children":[
                           {
@@ -369,32 +406,10 @@
       .size([height, width]);
 
     var diagonal = d3.svg.diagonal()
-      .projection(function(d) { return [d.y, d.x]; });
+      .projection(function(d) { return [d.x, d.y]; });
 
-    var orientations = {
-      // "top-to-bottom": {
-      //   size: [width, height],
-      //   x: function(d) { return d.x; },
-      //   y: function(d) { return d.y; }
-      // },
-      "right-to-left": {
-        size: [height, width],
-        x: function(d) { return width - d.y; },
-        y: function(d) { return d.x; }
-      },
-      // "bottom-to-top": {
-      //   size: [width, height],
-      //   x: function(d) { return d.x; },
-      //   y: function(d) { return height - d.y; }
-      // },
-      // "left-to-right": {
-      //   size: [height, width],
-      //   x: function(d) { return d.y; },
-      //   y: function(d) { return d.x; }
-      // }
-    };
 
-    var tooltip = d3.select("body")
+    var tooltip = d3.select("#area")
       .append("div")
       .data(treeData)
       .style("position", "absolute")
@@ -402,10 +417,8 @@
       .style("visibility", "hidden")
       .text(function(d){ return d.quarter ;});
 
-    var svg2 = d3.select("body")
+    var svg2 = d3.select("#area")
       .selectAll("svg")
-      .data(d3.entries(orientations))
-      .enter()
       .append("svg")
       .attr("width", width + margin.right + margin.left)
       .attr("height", height + margin.top + margin.bottom)
@@ -443,103 +456,38 @@
 
     // () ;
 
-    update_percentage = function(d, paths_array){
-      svg2.selectAll("g.link").remove();
-      
-      // console.log(d);
-      // console.log(paths_array);
-      
-      new_data = [];
-
-      size = paths_array.length;
-
-      for(i =0; i<size; i++){
-        position = paths_array[i][0][0].getAttribute("d").split(","); 
-        pos_x = position[2].split(" ");
-        pos_y = position[3].split(" "); 
-        //array_positions.push();
-        //console.log(pos_x,pos_y);
-      }
-
-      paths_coords = [
-        [230,90,115,180],
-        [115,270,57.5,360],
-        [57.5,450,28.75,540],
-        [28.75,630,19.16,720]
-      ];
-
-      for(i = 0; i<size; i++){
-        new_data.push([d[i],paths_coords[0],paths_coords[1],paths_coords[2],paths_coords[3]])
-      }
-
-      //console.log(new_data);
-
-      linktext = svg2.selectAll("g.link").data(new_data);
-      
-      linktext.enter()
-          .insert("g")
-          .attr("class", "link")
-          .append("text")
-          .attr("font-family", "Arial, Helvetica, sans-serif")
-          .attr("fill", "Black")
-          .style("font", "normal 14px Arial")
-          .style("color","black")
-          .attr("dy", ".35em")
-          .attr("text-anchor", "middle")
-          .text(function (d) {
-            //console.log(d);
-            for(i = 0; i<size; i++){
-              return parseFloat(d[i][0]);
-              //console.log(d[i][0]);
-            }
-          });
-
-      linktext.transition()
-          .duration(duration)
-          .attr("transform", function (d) {
-            for(i = 1; i<=4; i++){
-              //console.log(d[i]);
-              for(j=0; j<=3; j++){
-                console.log(d[i]);
-                return "translate(" + 
-                  ((d[i][0] + d[i][1])/2) + "," + ((d[i][2] + d[i][3])/2) + ")";
-              }
-            }
-            
-      });
-    }
-
 
     //highlight nodes
     highlightOn = function(d) {
       var quarter, semifinal, final_c, win
       var parentLine;
-      var path_array = [];
       var percentages = [];
       parentLine = function(d) {
         if (d.parent) {
           parentLine(d.parent);
           if((d.parent.name) && (d.name)){
-            var way = svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true);
-            path_array.push(way);
-            if(d.depth == 4){
-              percentages = [d.quarter,d.semifinal,d.final,d.win];
-              console.log(percentages);
-              
-            }
+            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true);      
           } 
+          if(d.depth == 4){
+            percentages = [d.quarter,d.semifinal,d.final,d.win];
+            $("#quarter_probability .span").text(parseFloat(percentages[0].toFixed(2)) + "%");
+            $("#semifinal_probability .span").text(parseFloat(percentages[1].toFixed(2)) + "%");
+            $("#final_probability .span").text(parseFloat(percentages[2].toFixed(2)) + "%");
+            $("#win_probability .span").text(parseFloat(percentages[3].toFixed(2)) + "%");
+          }
+          else{
+            $(".span").text(" ");
+          }
         }
       };
       parentLine(d);
-      //console.log(path_array); //array com os paths
-      update_percentage(percentages,path_array);
       return update2(d);
     };
 
 
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false);
-      svg2.selectAll("g.link").remove();
+      $(".span").text(" ");
       return update2(d);
     };
 
@@ -556,7 +504,7 @@
       update2(d);
     }
 
-
+    // here's where the magic happens
     function update2(source) {
       var link, node, nodeEnter, nodeExit, nodeUpdate, nodes;
       var duration = d3.event && d3.event.altKey ? 5000 : 500;
@@ -573,7 +521,7 @@
         .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
       // add the tool tip
-      var div = d3.select("body").append("div")
+      var div = d3.select("#area").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
 
@@ -633,7 +581,7 @@
             }
           }
         })
-        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+        .attr("transform", function(d) { return "translate(" + (width - d.y) + "," + d.y + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
           if(d.depth == 4){ 
@@ -662,6 +610,7 @@
             .style("top", (d3.event.pageY - 28) + "px");
           })
           .on("mouseout", function(d) { 
+            $(".span").text(" ");
             div.transition()
               .duration(500)
               .style("opacity", 0);
@@ -706,26 +655,31 @@
         // Transition nodes to their new position.
         var nodeUpdate = node.transition()
           .duration(duration)
-          .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+          .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
         nodeUpdate.select("circle")
           .attr("r", function(d) { return d._children ? 10 : 5; })
           .style("fill", function(d) { return d._children ? "lightsteelblue" : "#7a8288"; });
 
         nodeUpdate.select("text")
-          .style("fill-opacity", 1);
+          .style("fill-opacity", 1)
+
+        nodeUpdate.select("image")
+          .style("display","block");
 
         // Transition exiting nodes to the parent's new position.
         var nodeExit = node.exit().transition()
           .duration(duration)
-          .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; }).remove()
-
+          .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; });
 
         nodeExit.select("circle")
           .attr("r", 1e-6);
 
         nodeExit.select("text")
           .style("fill-opacity", 1e-6);
+
+        nodeExit.select("image")
+          .style("display","none");
 
         // Update the links…
         var link = svg2.selectAll("path.link")
@@ -753,14 +707,13 @@
             update2(d);
           })
           .on("mouseout", function(d) { 
+            $(".span").text(" ");
             highlightOff(d)
           })
           .attr("d", function(d) {
             var o = {x: source.x0, y: source.y0};
               return diagonal({source: o, target: o});
           }).transition().duration(duration).attr("d", diagonal);
-
-          
 
         // Transition links to their new position.
         link.transition()
@@ -778,6 +731,33 @@
             return diagonal({source: o, target: o});
         });
 
+        // Update the link text
+        var linktext = svg2.selectAll("g.link")
+            .data(links, function (d) {
+            return d.target.id;
+        });
+
+        linktext.enter()
+            .insert("g")
+            .attr("class", "link")
+            .append("text")
+            .attr("font-family", "Arial, Helvetica, sans-serif")
+            .attr("fill", "Black")
+            .style("font", "normal 12px Arial")
+            .style("color","black")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+            //console.log(d.target.name);
+              return parseFloat(d.target.quarter.toFixed(2));
+            });
+
+        // Transition link text to their new positions
+        linktext.transition()
+            .duration(duration)
+            .attr("transform", function (d) {
+            return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
+        });
 
         // Stash the old positions for transition.
         return nodes.forEach(function(d) {
@@ -794,6 +774,5 @@
     update2(root);
 
 </script>
-  
   </body>
 </html>
