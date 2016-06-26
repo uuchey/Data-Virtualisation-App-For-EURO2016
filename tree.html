@@ -117,14 +117,14 @@
       <h3>Probabilities</h3>
         <div class="row" id="probabilities">
           <div class="col-md-3">
-              <h3 class="text-danger">Be the Winner: </h3>
+              <h2 class="text-danger">Be the Winner: </h2>
               <div id="win_probability">
                 <span></span>
               </div>
           </div>
-          <div id="final_probability" class="col-md-3"><h3 class="text-warning">Go to Final: </h3><span class="text-warning"></span></div>
-          <div id="semifinal_probability" class="col-md-3"><h3 class="text-success">Go to Semifinal: </h3><span class="text-success"></span></div>
-          <div id="quarter_probability" class="col-md-3"><h3 class="text-info">Go to Quarter Finals: </h3><span class="text-info"></span></div>
+          <div id="final_probability" class="col-md-3"><h2 class="text-warning">Go to Final: </h2><span class="text-warning"></span></div>
+          <div id="semifinal_probability" class="col-md-3"><h2 class="text-success">Go to Semifinal: </h2><span class="text-success"></span></div>
+          <div id="quarter_probability" class="col-md-3"><h2 class="text-info">Go to Quarter Finals: </h2><span class="text-info"></span></div>
       </div>
       <div class="jumbotron" id="area">
       </div>
@@ -683,7 +683,7 @@
         // Transition exiting nodes to the parent's new position.
         var nodeExit = node.exit().transition()
           .duration(duration)
-          .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; }).remove()
+          .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; });
 
 
         nodeExit.select("circle")
@@ -787,6 +787,5 @@
     update2(root);
 
 </script>
-  <p>Visualization Inspired in: <a href="http://www.nytimes.com/interactive/2012/11/02/us/politics/paths­to­the­white­house.html  ?_r=0" target="window">New York Times - Paths to White House</a></p>
   </body>
 </html>
