@@ -3,14 +3,13 @@
   <head>
     <meta charset="utf-8">
 
-     <!-- for django template rendering -->
+     <!-- for django template rendering 
     {% load staticfiles %}
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet"> -->
 
     <!--
-    <link href="css/bootstrap.min.css"  rel="stylesheet">
-    <link href="css/flag-icon.min.css" rel="stylesheet">  -->
+    <link href="css/bootstrap.min.css"  rel="stylesheet"> -->
 
     <title>EURO 2016</title>
 
@@ -81,9 +80,9 @@
 
   <body class="text-center">
     <div class="container text-center">
-      <!-- <img src="images/euro-logo.png" height="100"> -->
+      <img src="images/euro-logo.png" height="100">
 
-      <img src="{% static "images/euro-logo.png" %}" height="100">
+      <!-- <img src="{% static "images/euro-logo.png" %}" height="100"> -->
       <p class="lead text-info">Dynamic Interactive Data Visualization tool - UEFA 2016</p>
       <p class="text-warning">Probability Data collected from BetFair</p>
     </div>
@@ -441,7 +440,9 @@
       parentLine = function(d) {
         if (d.parent) {
           parentLine(d.parent);
-          svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);       
+          if((d.parent.name) && (d.name)){
+            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true);      
+          } 
         }
       };
       parentLine(d);
@@ -492,7 +493,6 @@
       var nodeEnter = node.enter().append("svg:g")
         .attr("class", "node")
         .attr("quarter", function(d) {  
-          alert(d);
           if(d.quarter){
             return d.quarter;
           }
@@ -504,14 +504,62 @@
           if(d.depth == 3){
             team1 = d.children[0].quarter;
             team2 = d.children[1].quarter;
-            alert(team1);
             if(team1 > team2){
-              team_name = d.children[0].name;
+              d.title = d.children[0].name;
               d.quarter = d.children[0].semifinal;
+              d.final = d.children[0].final;
+              d.win = d.children[0].win;
             }else{
-              team_name = d.children[1].name;
+              d.title = d.children[1].name;
               d.quarter = d.children[1].semifinal;
+              d.final = d.children[1].final;
+              d.win = d.children[1].win;
             }
+            team_name = d.title;
+          }
+          if(d.depth == 2){
+            team1 = d.children[0].quarter;
+            team2 = d.children[1].quarter;
+            if(team1 > team2){
+              d.title = d.children[0].title;
+              d.quarter = d.children[0].final;
+              d.final = d.children[0].final;
+              d.win = d.children[0].win;
+            }else{
+              d.title = d.children[1].title;
+              d.quarter = d.children[1].final;
+              d.final = d.children[0].final;
+              d.win = d.children[0].win;
+            }
+            team_name = d.title;
+          }
+          if(d.depth == 1){
+            team1 = d.children[0].quarter;
+            team2 = d.children[1].quarter;
+            if(team1 > team2){
+              d.title = d.children[0].title;
+              d.quarter = d.children[0].win;
+              d.final = d.children[0].final;
+              d.win = d.children[0].win;
+            }else{
+              d.title = d.children[1].title;
+              d.quarter = d.children[1].win;
+              d.final = d.children[0].final;
+              d.win = d.children[0].win;
+            }
+            team_name = d.title;
+          }
+          if(d.depth == 0){
+            team1 = d.children[0].quarter;
+            team2 = d.children[1].quarter;
+            if(team1 > team2){
+              d.title = d.children[0].title;
+              d.quarter = d.children[0].quarter;
+            }else{
+              d.title = d.children[1].title;
+              d.quarter = d.children[1].quarter;
+            }
+            team_name = d.title;
           }
           highlightOn(d);
           if (d3.event.metaKey) {
@@ -528,7 +576,7 @@
           
           div.html(
               "Team: " + team_name + "<br/>" + 
-              "Probability to go to Next Phase: " + d.quarter + "<br/>"
+              "Probability: " + d.quarter + "<br/>"
             )
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
@@ -593,7 +641,9 @@
         
         link.enter().insert("svg:path", "g")
           .attr("class", function(d) {
-            return "link source-" + d.source.name + " target-" + d.target.name;
+            if((d.source.name) && (d.target.name)){
+              return "link source-" + d.source.name.replace(/\s/g,"_") + " target-" + d.target.name.replace(/\s/g,"_");
+            }
           })
           // .style("stroke", function(d) { return d.target.level; })
           .style("stroke-width", function(d) { return d.target.quarter/10; })
