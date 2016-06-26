@@ -106,7 +106,7 @@
     <div class="container text-center">
       <p>Probabilities</p>
       <div class="jumbotron" id="area">
-        <div class="row">
+        <div class="row" id="probabilities">
           <div id="win_probability" class="col-md-3">Win: <span></span></div>
           <div id="final_probability" class="col-md-3">Final: <span></span></div>
           <div id="semifinal_probability" class="col-md-3">Semifinal: <span></span></div>
@@ -475,11 +475,14 @@
           } 
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
-            console.log(percentages);
+            //console.log(percentages);
             $("#quarter_probability span").text(parseFloat(percentages[0].toFixed(2)) + "%");
             $("#semifinal_probability span").text(parseFloat(percentages[1].toFixed(2)) + "%");
             $("#final_probability span").text(parseFloat(percentages[2].toFixed(2)) + "%");
             $("#win_probability span").text(parseFloat(percentages[3].toFixed(2)) + "%");
+          }
+          else{
+            $("#probabilities").
           }
         }
       };
