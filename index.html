@@ -20,12 +20,22 @@
           stroke-width: 1px;
         }
 
+        .lead{
+          margin-bottom: 0;
+        }
+
         .node text { font: 14px sans-serif; }
 
         .link {
           fill: none;
           stroke: #ccc;
           stroke-width: 2px;
+        }
+
+        .link text {
+            font: 10px sans-serif;
+            fill: black;
+            /*display: none;*/
         }
 
         path.highlight {
@@ -569,7 +579,7 @@
           
           div.html(
               "Team: " + team_name2 + "<br/>" + 
-              "Probability: " + d.quarter + "<br/>"
+              "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %"
             )
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
@@ -673,28 +683,57 @@
               return diagonal({source: o, target: o});
           }).transition().duration(duration).attr("d", diagonal);
 
-          // Transition links to their new position.
-          link.transition()
-            .duration(duration)
-            .attr("d", diagonal)
-            .style("stroke-width", function(d) { 
-              return d.target.quarter/10; 
-            });
+          
 
-          // Transition exiting nodes to the parent's new position.
-          link.exit().transition()
-            .duration(duration)
-            .attr("d", function(d) {
-              var o = {x: source.x, y: source.y};
-              return diagonal({source: o, target: o});
+        // Transition links to their new position.
+        link.transition()
+          .duration(duration)
+          .attr("d", diagonal)
+          .style("stroke-width", function(d) { 
+            return d.target.quarter/10; 
           });
 
-      // Stash the old positions for transition.
-      return nodes.forEach(function(d) {
-        d.x0 = d.x;
-        d.y0 = d.y;
-      });
+        // Transition exiting nodes to the parent's new position.
+        link.exit().transition()
+          .duration(duration)
+          .attr("d", function(d) {
+            var o = {x: source.x, y: source.y};
+            return diagonal({source: o, target: o});
+        });
 
+        // Update the link text
+        var linktext = svg2.selectAll("g.link")
+            .data(links, function (d) {
+            return d.target.id;
+        });
+
+        linktext.enter()
+            .insert("g")
+            .attr("class", "link")
+            .append("text")
+            .attr("font-family", "Arial, Helvetica, sans-serif")
+            .attr("fill", "Black")
+            .style("font", "normal 12px Arial")
+            .style("color","black")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+            //console.log(d.target.name);
+              return parseFloat(d.target.quarter.toFixed(2));
+            });
+
+        // Transition link text to their new positions
+        linktext.transition()
+            .duration(duration)
+            .attr("transform", function (d) {
+            return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
+        })
+
+        // Stash the old positions for transition.
+        return nodes.forEach(function(d) {
+          d.x0 = d.x;
+          d.y0 = d.y;
+        });
     }
 
     root = treeData[0];
