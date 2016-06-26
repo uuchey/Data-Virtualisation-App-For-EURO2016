@@ -619,7 +619,7 @@
             }
           }
         })
-        .attr("transform", function(d) { return "translate(" + () + "," + (d.x) + ")"; })
+        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .attr("cx", return width - d.y; )
         .attr("cy", return d.x);
         .on("click", click)
