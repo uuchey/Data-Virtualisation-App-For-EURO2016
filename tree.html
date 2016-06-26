@@ -105,11 +105,13 @@
     </div>
     <div class="container text-center">
       <p>Probabilities</p>
-      <div class="row">
-        <div id="quarter_probability" class="col-md-3">Quarter Final: <span></span></div>
-        <div id="semifinal_probability" class="col-md-3">Semifinal: <span></span></div>
-        <div id="final_probability" class="col-md-3">Final: <span></span></div>
-        <div id="win_probability" class="col-md-3">Win: <span></span></div>
+      <div class="bs-component" id="area">
+        <div class="row">
+          <div id="win_probability " class="col-md-3">Win: <span></span></div>
+          <div id="final_probability" class="col-md-3">Final: <span></span></div>
+          <div id="semifinal_probability" class="col-md-3">Semifinal: <span></span></div>
+          <div id="quarter_probability" class="col-md-3">Quarter Final: <span></span></div>
+        </div>
       </div>
     </div>
 
@@ -410,7 +412,7 @@
       // }
     };
 
-    var tooltip = d3.select("body")
+    var tooltip = d3.select("#area")
       .append("div")
       .data(treeData)
       .style("position", "absolute")
@@ -418,7 +420,7 @@
       .style("visibility", "hidden")
       .text(function(d){ return d.quarter ;});
 
-    var svg2 = d3.select("body")
+    var svg2 = d3.select("#area")
       .selectAll("svg")
       .data(d3.entries(orientations))
       .enter()
@@ -521,7 +523,7 @@
         .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
       // add the tool tip
-      var div = d3.select("body").append("div")
+      var div = d3.select("#area").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
 
