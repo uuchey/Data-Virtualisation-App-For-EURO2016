@@ -34,7 +34,7 @@
 
         .link text {
             font: 10px sans-serif;
-            fill: black;
+            color: black !important;
             /*display: none;*/
         }
 
@@ -443,26 +443,103 @@
 
     // () ;
 
+    update_percentage = function(d, paths_array){
+      svg2.selectAll("g.link").remove();
+      
+      // console.log(d);
+      // console.log(paths_array);
+      
+      new_data = [];
+
+      size = paths_array.length;
+
+      for(i =0; i<size; i++){
+        position = paths_array[i][0][0].getAttribute("d").split(","); 
+        pos_x = position[2].split(" ");
+        pos_y = position[3].split(" "); 
+        //array_positions.push();
+        //console.log(pos_x,pos_y);
+      }
+
+      paths_coords = [
+        [230,90,115,180],
+        [115,270,57.5,360],
+        [57.5,450,28.75,540],
+        [28.75,630,19.16,720]
+      ];
+
+      for(i = 0; i<size; i++){
+        new_data.push([d[i],paths_coords[0],paths_coords[1],paths_coords[2],paths_coords[3]])
+      }
+
+      //console.log(new_data);
+
+      linktext = svg2.selectAll("g.link").data(new_data);
+      
+      linktext.enter()
+          .insert("g")
+          .attr("class", "link")
+          .append("text")
+          .attr("font-family", "Arial, Helvetica, sans-serif")
+          .attr("fill", "Black")
+          .style("font", "normal 14px Arial")
+          .style("color","black")
+          .attr("dy", ".35em")
+          .attr("text-anchor", "middle")
+          .text(function (d) {
+            //console.log(d);
+            for(i = 0; i<size; i++){
+              return parseFloat(d[i][0]);
+              //console.log(d[i][0]);
+            }
+          });
+
+      linktext.transition()
+          .duration(duration)
+          .attr("transform", function (d) {
+            for(i = 1; i<=4; i++){
+              //console.log(d[i]);
+              for(j=0; j<=3; j++){
+                console.log(d[i]);
+                return "translate(" + 
+                  ((d[i][0] + d[i][1])/2) + "," + ((d[i][2] + d[i][3])/2) + ")";
+              }
+            }
+            
+      });
+    }
+
 
     //highlight nodes
     highlightOn = function(d) {
       var quarter, semifinal, final_c, win
       var parentLine;
+      var path_array = [];
+      var percentages = [];
       parentLine = function(d) {
         if (d.parent) {
           parentLine(d.parent);
           if((d.parent.name) && (d.name)){
-            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true);      
+            var way = svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true);
+            path_array.push(way);
+            if(d.depth == 4){
+              percentages = [d.quarter,d.semifinal,d.final,d.win];
+              console.log(percentages);
+              
+            }
           } 
         }
       };
       parentLine(d);
+      //console.log(path_array); //array com os paths
+      update_percentage(percentages,path_array);
       return update2(d);
     };
 
 
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false);
+      svg2.selectAll("g.link").remove();
       return update2(d);
     };
 
@@ -701,33 +778,6 @@
             return diagonal({source: o, target: o});
         });
 
-        // Update the link text
-        var linktext = svg2.selectAll("g.link")
-            .data(links, function (d) {
-            return d.target.id;
-        });
-
-        linktext.enter()
-            .insert("g")
-            .attr("class", "link")
-            .append("text")
-            .attr("font-family", "Arial, Helvetica, sans-serif")
-            .attr("fill", "Black")
-            .style("font", "normal 12px Arial")
-            .style("color","black")
-            .attr("dy", ".35em")
-            .attr("text-anchor", "middle")
-            .text(function (d) {
-            //console.log(d.target.name);
-              return parseFloat(d.target.quarter.toFixed(2));
-            });
-
-        // Transition link text to their new positions
-        linktext.transition()
-            .duration(duration)
-            .attr("transform", function (d) {
-            return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
-        })
 
         // Stash the old positions for transition.
         return nodes.forEach(function(d) {
