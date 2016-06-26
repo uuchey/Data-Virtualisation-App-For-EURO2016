@@ -143,40 +143,6 @@
 
     <script>
 
-    var drawNode = function (d) {
-      nodeHash[d.name] = d;
-      var html = '<div xmlns="http://www.w3.org/1999/xhtml" class="nodeContent">' +
-          '<div class="day">' + d.day + '</div>' +
-          '<div class="versus">' +
-            '<span class="team team1 team-' + d.team1 + '"><span class="teamName">' + d.team1 + '&nbsp;&nbsp;</span>' +
-            (teamList.indexOf(d.team1) > -1 ? '<img src="' + imagePath + d.team1.toLowerCase() + '.png"/>' : '') +
-            '</span>' +
-            '<span class="timeAndScore">' +
-              '<span class="time">' + d.time + '</span><br/>' +
-              '<span class="score">' + (d.score ? d.score : '') + '</span>' +
-            '</span>' +
-            '<span class="team team2 team-' + d.team2 + '"><span class="teamName">&nbsp;&nbsp;' + d.team2 + '</span>' +
-            (teamList.indexOf(d.team2) > -1 ? '<img src="' + imagePath + d.team2.toLowerCase() + '.png"/>' : '') +
-            '</span>' +
-          '</div>' +
-          '<div class="place">' + d.place + '</div>' +
-        '</div>';
-      var c = $(html)
-        .css({
-            'width': nodeWidth ,
-            'height': nodeHeight
-          });
-
-      // no team flag
-      if (teamList.indexOf(d.team1) === -1 && teamList.indexOf(d.team2) === -1) {
-        c.find('.flag').hide();
-      }
-
-      c.data('data', d);
-
-      $(this).append(c);
-    };
-
     //the data
     var treeData = [
       {
@@ -474,9 +440,6 @@
       .text(function(d){ return d.quarter ;});
 
     var svg2 = d3.select("#area")
-      .selectAll("svg")
-      .data(d3.entries(orientations))
-      .enter()
       .append("svg")
       .attr("width", width + margin.right + margin.left)
       .attr("height", height + margin.top + margin.bottom)
@@ -664,7 +627,6 @@
           div.html(
               "Team: " + team_name2 + "<br/>" + 
               "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %"
-              "<image xlink href=" + d.icon + ">" + "</div><image src=" + d.icon + ">"
             )
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
