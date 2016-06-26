@@ -613,7 +613,7 @@
             }
           }
         })
-        .attr("transform", function(d) { return "translate(" + source.x0 + "," + source.y0 + ")"; })
+        .attr("transform", function(d) { return "translate(" + width - d.y + "," + d.x + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
           if(d.depth == 4){ 
@@ -663,7 +663,7 @@
 
         nodeEnter.append("text")
           .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
-          .attr("dy", "2em")
+          .attr("dy", ".35em")
           .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
           .text(function(d) { return d.name; })
           .style("fill-opacity", 1e-6)
