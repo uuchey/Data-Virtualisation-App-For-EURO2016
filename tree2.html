@@ -641,7 +641,7 @@
           div.html(
               "Team: " + team_name2 + "<br/>" + 
               "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %" +
-              "<img src=" + function(d) { return d.icon; }
+              "<img src=" + d.icon
               + ">"
             )
             .style("left", (d3.event.pageX) + "px")
