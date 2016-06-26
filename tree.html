@@ -121,7 +121,7 @@
       <h3>Probabilities</h3>
         <div class="row" id="probabilities">
           <div id="win_probability" class="col-md-3">
-            <h4 class="text-danger">Go to Final: </h4>
+            <h4 class="text-danger">Win: </h4>
             <div class="span lead text-danger"></div>
           </div>
           <div id="final_probability" class="col-md-3">
@@ -701,6 +701,9 @@
 
         nodeExit.select("text")
           .style("fill-opacity", 1e-6);
+
+        nodeExit.select("image")
+          .style("display","none");
 
         // Update the links…
         var link = svg2.selectAll("path.link")
