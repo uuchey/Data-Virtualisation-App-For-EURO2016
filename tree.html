@@ -142,9 +142,6 @@
     </div>
 
     <script>
-
-    var gradient = ["#FFFFFF", "#DBBADB", "#B776B7", "#943294", "#4A194A", "#000000", "#11754D", "#23EB9B", "#87DB5A", "#EBCC1A", "#81897C", "#1846DE", "#846788", "#F08833", "#F6482B", "#FC0824"];
-
     //the data
     var treeData = [
       {
@@ -408,29 +405,14 @@
       .size([height, width]);
 
     var diagonal = d3.svg.diagonal()
-      .projection(function(d) { return [d.y, d.x]; });
+      .projection(function(d) { return [d.x, d.y]; });
 
     var orientations = {
-      // "top-to-bottom": {
-      //   size: [width, height],
-      //   x: function(d) { return d.x; },
-      //   y: function(d) { return d.y; }
-      // },
       "right-to-left": {
         size: [height, width],
         x: function(d) { return width - d.y; },
         y: function(d) { return d.x; }
       },
-      // "bottom-to-top": {
-      //   size: [width, height],
-      //   x: function(d) { return d.x; },
-      //   y: function(d) { return height - d.y; }
-      // },
-      // "left-to-right": {
-      //   size: [height, width],
-      //   x: function(d) { return d.y; },
-      //   y: function(d) { return d.x; }
-      // }
     };
 
     var tooltip = d3.select("#area")
@@ -478,10 +460,6 @@
       return _results;
     };
 
-    // countries_and_colors = [];
-
-    // () ;
-
 
     //highlight nodes
     highlightOn = function(d) {
@@ -496,7 +474,6 @@
           } 
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
-            //console.log(percentages);
             $("#quarter_probability .span").text(parseFloat(percentages[0].toFixed(2)) + "%");
             $("#semifinal_probability .span").text(parseFloat(percentages[1].toFixed(2)) + "%");
             $("#final_probability .span").text(parseFloat(percentages[2].toFixed(2)) + "%");
@@ -531,7 +508,11 @@
       update2(d);
     }
 
+    function child_image(d){
 
+    }
+
+    // here's where the magic happens
     function update2(source) {
       var link, node, nodeEnter, nodeExit, nodeUpdate, nodes;
       var duration = d3.event && d3.event.altKey ? 5000 : 500;
@@ -551,6 +532,7 @@
       var div = d3.select("#area").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
+
 
       // Enter any new nodes at the parent's previous position.
       var nodeEnter = node.enter().append("svg:g")
@@ -632,7 +614,7 @@
           div.html(
               "Team: " + team_name2 + "<br/>" + 
               "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %" + "<br>" +
-              "<image xlink href=" + d.icon + ">" + "</div><image src=" + d.icon + ">"
+              "<image xlink href=" + d.icon + " height=" + 10 +">" + "</div><image src=" + d.icon + ">"
             )
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
@@ -742,8 +724,6 @@
             var o = {x: source.x0, y: source.y0};
               return diagonal({source: o, target: o});
           }).transition().duration(duration).attr("d", diagonal);
-
-          
 
         // Transition links to their new position.
         link.transition()
