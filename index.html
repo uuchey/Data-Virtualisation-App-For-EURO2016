@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8">
 
-     <!-- for django template rendering 
+     <!-- for django template rendering -->
     {% load staticfiles %}
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet"> -->
+    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet">
 
     <!--
-    
-    <link href="css/flag-icon.min.css" rel="stylesheet">  -->
     <link href="css/bootstrap.min.css"  rel="stylesheet">
+    <link href="css/flag-icon.min.css" rel="stylesheet">  -->
+
     <title>EURO 2016</title>
 
 
@@ -81,19 +81,18 @@
 
   <body class="text-center">
     <div class="container text-center">
-      <img src="images/euro-logo.png" height="100">
-      <!-- <img src="{% static "images/euro-logo.png" %}" height="100"> -->
+      <!-- <img src="images/euro-logo.png" height="100"> -->
 
-      
+      <img src="{% static "images/euro-logo.png" %}" height="100">
       <p class="lead text-info">Dynamic Interactive Data Visualization tool - UEFA 2016</p>
       <p class="text-warning">Probability Data collected from BetFair</p>
     </div>
 
 
-    <!-- load the d3.js library -->
-    
-    <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
-    <script src="js/d3.min.js"></script>
+    <!-- load the d3.js library
+    <script src="js/d3.min.js"></script> -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
     <script>
 
     var gradient = ["#FFFFFF", "#DBBADB", "#B776B7", "#943294", "#4A194A", "#000000", "#11754D", "#23EB9B", "#87DB5A", "#EBCC1A", "#81897C", "#1846DE", "#846788", "#F08833", "#F6482B", "#FC0824"];
@@ -430,6 +429,11 @@
       return _results;
     };
 
+    // countries_and_colors = [];
+
+    // () ;
+
+
     //highlight nodes
     highlightOn = function(d) {
       var quarter, semifinal, final_c, win
@@ -437,16 +441,6 @@
       parentLine = function(d) {
         if (d.parent) {
           parentLine(d.parent);
-          //svg2.selectAll("path.link").style("");
-          if(d.parent.depth == 4){
-            quarter = d.quarter;
-            semifinal = d.semifinal;
-            final_c = d.final;
-            win = d.win;
-            color = d.parent.level;
-            console.log(color);
-          }
-          // mapear os países com as cores
           svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);       
         }
       };
@@ -500,12 +494,25 @@
         .attr("quarter", function(d) {  
           alert(d);
           if(d.quarter){
-            return d.quarter
+            return d.quarter;
           }
         })
         .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
+          team_name = d.name;
+          if(d.depth == 3){
+            team1 = d.children[0].quarter;
+            team2 = d.children[1].quarter;
+            alert(team1);
+            if(team1 > team2){
+              team_name = d.children[0].name;
+              d.quarter = d.children[0].semifinal;
+            }else{
+              team_name = d.children[1].name;
+              d.quarter = d.children[1].semifinal;
+            }
+          }
           highlightOn(d);
           if (d3.event.metaKey) {
             highlightOn(d);
@@ -520,7 +527,7 @@
           .style("opacity", .9);
           
           div.html(
-              "Team: " + d.name + "<br/>" + 
+              "Team: " + team_name + "<br/>" + 
               "Probability to go to Next Phase: " + d.quarter + "<br/>"
             )
             .style("left", (d3.event.pageX) + "px")
@@ -588,7 +595,7 @@
           .attr("class", function(d) {
             return "link source-" + d.source.name + " target-" + d.target.name;
           })
-          .style("stroke", function(d) { return d.target.level; })
+          // .style("stroke", function(d) { return d.target.level; })
           .style("stroke-width", function(d) { return d.target.quarter/10; })
           .on("mouseover",function(d){
             highlightOn(d);
