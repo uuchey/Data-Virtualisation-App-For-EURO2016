@@ -613,7 +613,7 @@
             }
           }
         })
-        .attr("transform", function(d) { return "translate(" + width - d.y + "," + d.x + ")"; })
+        .attr("transform", function(d) { return "translate(" + (width - d.y) + "," + (d.x) + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
           if(d.depth == 4){ 
