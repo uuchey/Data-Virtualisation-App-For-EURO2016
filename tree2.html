@@ -440,7 +440,7 @@
       .size([height, width]);
 
     var diagonal = d3.svg.diagonal()
-      .projection(function(d) { return [d.x, d.y]; });
+      .projection(function(d) { return [width - d.y, d.x]; });
 
     var orientations = {
       // "top-to-bottom": {
