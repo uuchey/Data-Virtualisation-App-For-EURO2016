@@ -103,8 +103,8 @@
       <div id="win_probability">Win: <span>10</span></div>
     </div>
 
-    <!-- load the d3.js library -->
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <!-- load the jquery and d3.js libraries
+    <script src="http://d3js.org/d3.v3.min.js"></script>-->
     <script src="js/d3.min.js"></script>
     <script src="js/jquery.min.js"></script>
 
@@ -463,10 +463,10 @@
           } 
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
-            $("#quarter_probability").text(percentage[0]);
-            $("#quarter_probability").text(percentage[1]);
-            $("#quarter_probability").text(percentage[2]);
-            $("#quarter_probability").text(percentage[3]);
+            $("#quarter_probability").text(percentages[0]);
+            $("#quarter_probability").text(percentages[1]);
+            $("#quarter_probability").text(percentages[2]);
+            $("#quarter_probability").text(percentages[3]);
           }
         }
       };
