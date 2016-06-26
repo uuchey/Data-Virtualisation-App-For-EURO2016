@@ -531,6 +531,7 @@
       update2(d);
     }
 
+    d_icon = "";
 
     function update2(source) {
       var link, node, nodeEnter, nodeExit, nodeUpdate, nodes;
@@ -563,21 +564,22 @@
         .attr({
           quarter: function (d) { 
             team_name = d.name;
+            var c = 0;
             if(d.depth == 3){
               team1 = d.children[0].quarter;
               team2 = d.children[1].quarter;
+              
               if(team1 > team2){
-                d.title = d.children[0].name;
-                d.quarter = d.children[0].semifinal;
-                d.final = d.children[0].final;
-                d.win = d.children[0].win;
+                c = 0;
               }else{
-                d.title = d.children[1].name;
-                d.quarter = d.children[1].semifinal;
-                d.final = d.children[1].final;
-                d.win = d.children[1].win;
+                c = 1;
               }
-              d.icon = d.icon;
+
+              d.title = d.children[c].name;
+              d.quarter = d.children[c].semifinal;
+              d.final = d.children[c].final;
+              d.win = d.children[c].win;
+              d_icon = d.parent.icon;
               team_name = d.title;
               return d.quarter;
             }
@@ -590,6 +592,7 @@
                   d.quarter = d.children[0].final;
                   d.final = d.children[0].final;
                   d.win = d.children[0].win;
+
                   if(d.depth == 1 || d.depth == 0){
                     d.quarter = d.win;
                   }
@@ -598,11 +601,12 @@
                   d.quarter = d.children[1].final;
                   d.final = d.children[1].final;
                   d.win = d.children[1].win;
+
                   if(d.depth == 1 || d.depth == 0){
                     d.quarter = d.win;
                   }
                 }
-                d.icon = d.icon;
+                d_icon = d.icon;
                 team_name = d.title;
                 return d.quarter;
               } 
@@ -633,7 +637,7 @@
           div.html(
               "Team: " + team_name2 + "<br/>" + 
               "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %" +
-              "<image xlink href=" + d.icon + " height=" + 6 +">" + "</div><image src=" + d.icon + ">"
+              "<image xlink href=" + d_icon + " height=" + 6 +">" + "</div><image src=" + d_icon + ">"
             )
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
