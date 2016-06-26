@@ -569,7 +569,6 @@
             if(d.depth == 3){
               team1 = d.children[0].quarter;
               team2 = d.children[1].quarter;
-              
               if(team1 > team2){
                 c = 0;
               }else{
@@ -588,21 +587,27 @@
                 team1 = d.children[0].quarter;
                 team2 = d.children[1].quarter;
                 if(team1 > team2){
-                  c = 0;
+                  d.title = d.children[0].title;
+                  d.quarter = d.children[0].final;
+                  d.final = d.children[0].final;
+                  d.win = d.children[0].win;
+
                   if(d.depth == 1 || d.depth == 0){
                     d.quarter = d.win;
                   }
+                  d_icon = d.children[].icon;
                 }else{
-                  c = 1;
+                  d.title = d.children[1].title;
+                  d.quarter = d.children[1].final;
+                  d.final = d.children[1].final;
+                  d.win = d.children[1].win;
+
                   if(d.depth == 1 || d.depth == 0){
                     d.quarter = d.win;
                   }
+                  d_icon = d.children[].icon;
                 }
-                d.title = d.children[1].title;
-                d.quarter = d.children[1].final;
-                d.final = d.children[1].final;
-                d.win = d.children[1].win;
-                d_icon = d.children[].icon;
+                
                 team_name = d.title;
                 return d.quarter;
               } 
