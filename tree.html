@@ -104,8 +104,8 @@
       
     </div>
     <div class="container text-center">
-      <p>Probabilities</p>
       <div class="jumbotron" id="area">
+        <h4>Probabilities:</h4>
         <div class="row" id="probabilities">
           <div id="win_probability" class="col-md-3">Win: <span></span></div>
           <div id="final_probability" class="col-md-3">Final: <span></span></div>
@@ -482,7 +482,7 @@
             $("#win_probability span").text(parseFloat(percentages[3].toFixed(2)) + "%");
           }
           else{
-            $("#probabilities").
+            $("#probabilities > span").
           }
         }
       };
