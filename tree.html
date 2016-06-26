@@ -116,10 +116,10 @@
     <div class="container text-center">
       <h3>Probabilities</h3>
         <div class="row" id="probabilities">
-          <div id="win_probability" class="col-md-3"><h4 class="text-danger">Go to Final: </h4><span class="lead text-danger"></span></div>
-          <div id="final_probability" class="col-md-3"><h4 class="text-warning">Go to Final: </h4><span class="lead text-warning"></span></div>
-          <div id="semifinal_probability" class="col-md-3"><h4 class="text-success">Go to Semifinal: </h4><span class="lead text-success"></span></div>
-          <div id="quarter_probability" class="col-md-3"><h4 class="text-info">Go to Quarter Finals: </h4><span class="lead text-info"></span></div>
+          <div id="win_probability" class="col-md-3"><h4 class="text-danger">Go to Final: </h4><div class="span lead text-danger"></span></div>
+          <div id="final_probability" class="col-md-3"><h4 class="text-warning">Go to Final: </h4><div class="span lead text-warning"></span></div>
+          <div id="semifinal_probability" class="col-md-3"><h4 class="text-success">Go to Semifinal: </h4><div class="span lead text-success"></span></div>
+          <div id="quarter_probability" class="col-md-3"><h4 class="text-info">Go to Quarter Finals: </h4><span class="span lead text-info"></span></div>
       </div>
       <div class="jumbotron" id="area">
       </div>
@@ -487,7 +487,7 @@
             $("#win_probability span").text(parseFloat(percentages[3].toFixed(2)) + "%");
           }
           else{
-            $("#probabilities span").text(" ");
+            $(".span").text(" ");
           }
         }
       };
@@ -498,7 +498,7 @@
 
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false);
-      $("#probabilities span").text(" ");
+      $(".span").text(" ");
       return update2(d);
     };
 
@@ -621,7 +621,7 @@
             .style("top", (d3.event.pageY - 28) + "px");
           })
           .on("mouseout", function(d) { 
-            $("#probabilities span").text(" ");
+            $(".span").text(" ");
             div.transition()
               .duration(500)
               .style("opacity", 0);
@@ -713,7 +713,7 @@
             update2(d);
           })
           .on("mouseout", function(d) { 
-            $("#probabilities span").text(" ");
+            $(".span").text(" ");
             highlightOff(d)
           })
           .attr("d", function(d) {
