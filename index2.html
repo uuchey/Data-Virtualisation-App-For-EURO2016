@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css"  rel="stylesheet">
+    <link href="css/flag-icon.min.css" rel="stylesheet">
+
+    <title>EURO 2016</title>
+
+    <style>
+
+  .node circle {
+    fill: black;
+    stroke: black;
+    stroke-width: 1px;
+  }
+
+  .node text { font: 12px sans-serif; }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
+  
+    </style>
+
+  </head>
+
+  <body class="text-center">
+    <div class="container text-center">
+      <img src="images/euro-logo.png" height="100">
+    </div>
+
+
+<!-- load the d3.js library --> 
+<script src="js/d3.min.js"></script>
+
+<script>
+
+var margin = {top: 20, right: 120, bottom: 20, left: 120},
+  width = 960 - margin.right - margin.left,
+  height = 500 - margin.top - margin.bottom;
+  
+var i = 0,
+  duration = 750,
+  root;
+
+var treeDynamic = d3.layout.tree()
+  .size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+  .projection(function(d) { return [d.y, d.x]; });
+
+var svg2 = d3.select("body").append("svg")
+  .attr("width", width + margin.right + margin.left)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("id","sem_bandeira")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+function update2(source) {
+
+  // Compute the new tree layout.
+  var nodes = treeDynamic.nodes(root).reverse(),
+    links = treeDynamic.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = svg2.selectAll("g.node")
+    .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+    .attr("class", "node")
+    .attr("quarter", function(d) { return d.quarter; })
+    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+    .on("click", click);
+
+  nodeEnter.append("circle")
+    .attr("r", 1e-6)
+    .style("fill", function(d) { return d._children ? "#7a8288" : "lightsteelblue"; });
+
+  nodeEnter.append("image")
+      .attr("xlink:href", function(d) { return d.icon; })
+      .attr("x", "-12px")
+      .attr("y", "-12px")
+      .attr("width", "24px")
+      .attr("height", "24px");
+
+  nodeEnter.append("text")
+    .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+    .attr("dy", ".35em")
+    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+    .text(function(d) { return d.name; })
+    .style("fill-opacity", 1e-6)
+    .style("fill","white");
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+    .duration(duration)
+    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+    .attr("r", 4)
+    .style("fill", function(d) { return d._children ? "lightsteelblue" : "#7a8288"; });
+
+  nodeUpdate.select("text")
+    .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+    .duration(duration)
+    .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+    .remove();
+
+  nodeExit.select("circle")
+    .attr("r", 1e-6);
+
+  nodeExit.select("text")
+    .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg2.selectAll("path.link")
+    .data(links, function(d) { return d.target.id; })
+    .attr("stroke-width", function(d) { return d.target.quarter/10; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+    .attr("class", "link")
+    .style("stroke", function(d) { return d.target.level; })
+    .style("stroke-width", function(d) { return d.target.quarter/10; })
+    .attr("d", function(d) {
+    var o = {x: source.x0, y: source.y0};
+    return diagonal({source: o, target: o});
+    })
+
+  // Transition links to their new position.
+  link.transition()
+    .duration(duration)
+    .attr("d", diagonal)
+    .style("stroke-width", function(d) { return d.quarter/10; });
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+    .duration(duration)
+    .attr("d", function(d) {
+    var o = {x: source.x, y: source.y};
+    return diagonal({source: o, target: o});
+    })
+    .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+  d.x0 = d.x;
+  d.y0 = d.y;
+  });
+}
+
+
+var highlightLink = function (node) {
+  /*
+  {name: 'Round-of-16-7', team: 'FRA'}
+  */
+  $('.team-' + node.team).addClass('highlight');
+  //console.log(node, 'highlight');
+  var linkTarget = [];
+  var target = node;
+  while (targetHash[target.name]) {
+    linkTarget.push(target.name);
+    target = targetHash[target.name].source;
+  }
+  var $lastLink = $container.find('path').last();
+  linkTarget.forEach(function (d) {
+    var $link = $container.find('.link-target-' + d)
+    var $clone = $link.clone();
+    $clone.attr('class', 'link highlight');
+    $clone.insertAfter($lastLink);
+
+
+    var group = $link.attr('data-group');
+    //console.log($link, '>>>link');
+    //console.log(group, '>>group');
+    var $prop = $container.find('.prob-target-' + d)
+    var probValue = (probability[node.team][group] * 100).toFixed(1) + '%' ;
+
+    //console.log(probValue, '>>probValue');
+    $prop.text(probValue);
+    $prop.show();
+  });
+  //console.log(links);
+
+  var probValue = (probability[node.team]['Final'] * 100).toFixed(1) + '%' ;
+  $container.find('.last-prob').text(probValue).show();
+
+};
+
+var lowlightLink = function () {
+  $('.team.highlight').removeClass('highlight');
+  $container.find('.link.highlight').remove();
+  $container.find('.prob').hide();
+};
+
+
+
+function animateParentChain(links)
+{
+  var linkRenderer = d3.svg.diagonal()
+          .projection(function(d)
+          {
+              return [d.y, d.x];
+          });
+  
+      // Links
+     ui.animGroup.selectAll("path.selected")
+         .data([])
+         .exit().remove();
+ 
+     ui.animGroup
+         .selectAll("path.selected")
+         .data(links)
+         .enter().append("svg:path")
+         .attr("class", "selected")
+         .attr("d", linkRenderer);
+ 
+     // Animate the clipping path
+     var overlayBox = ui.svgRoot.node().getBBox();
+ 
+     ui.svgRoot.select("#clip-rect")
+         .attr("x", overlayBox.x + overlayBox.width)
+         .attr("y", overlayBox.y)
+         .attr("width", 0)
+         .attr("height", overlayBox.height)
+         .transition().duration(500)
+         .attr("x", overlayBox.x)
+         .attr("width", overlayBox.width);
+}
+
+//basically a way to get the path to an object
+function searchTree(obj,search,path){
+  if(obj.name === search){ //if search is found return, add the object to the path and return it
+    path.push(obj);
+    return path;
+  }
+  else if(obj.children || obj._children){ //if children are collapsed d3 object will have them instantiated as _children
+    var children = (obj.children) ? obj.children : obj._children;
+    for(var i=0;i<children.length;i++){
+      path.push(obj);// we assume this path is the right one
+      var found = searchTree(children[i],search,path);
+      if(found){// we were right, this should return the bubbled-up path from the first if statement
+        return found;
+      }
+      else{//we were wrong, remove this parent from the path and continue iterating
+        path.pop();
+      }
+    }
+  }
+  else{//not the right object, return false so it will continue to iterate in the loop
+    return false;
+  }
+}
+
+// Toggle children on click.
+function click(d) {
+  //alert(d.name);
+  console.log(d);
+  if (d.children) {
+    //alert("tem filhos");
+    d._children = d.children;
+    d.children = null;
+  } 
+  else {
+    d.parent.quarter = d.semifinal;
+    //alert("nao tem filhos");
+    // console.log(d.children.semifinal)
+    // d.attr("stroke-width",d.semifinal)
+    d.children = d._children;
+    d._children = null;
+  }
+  update2(d);
+}
+
+var treeData = [
+  {
+    "name": "Winner",
+    "parent": "null",
+    "children": [
+      {
+        "name": "Finalist 1",
+        "type": "grey",
+        "children":[
+          {
+            "name": "Fisrt Semi-Finalist Classified",
+            "type": "grey",
+            "children":[
+              {
+                "name": "1st Quarter Final Classified",
+                "type": "grey",
+                "children":[
+                  {
+                    "name": "Poland",
+                    "parent": "null",
+                    "quarter": 56.49717514124294,
+                    "semifinal": 22.22222222222222,
+                    "final":  10.0,
+                    "win": 3.4482758620689653,
+                    "type": "steelblue",
+                    "icon": "images/flags/pol.png",
+                    "level": "#FFE8E7",
+                  },
+                  {
+                    "name": "Switzerland",
+                    "parent": "null",
+                    "quarter": 45.45454545454545,
+                    "semifinal": 16.666666666666664,
+                    "final":  5.714285714285714,
+                    "win": 1.8181818181818181,
+                    "icon": "images/flags/swi.png",
+                    "level": "#801815",
+                  },
+                ]
+              },
+              {
+                "name": "2nd Quarter Final Classified",
+                "type": "grey",
+                "children":[
+                  {
+                        "name": "Portugal",
+                        "quarter": 46.728971962616825,
+                        "semifinal": 27.77777777777778,
+                        "final": 17.24137931034483,
+                        "win": 5.88235294117647,
+                        "type": "grey",
+                        "icon": "images/flags/por.png",
+                        "level": "#235017",
+                      },
+                      {
+                        "name": "Croatia",
+                        "quarter": 57.47126436781609,
+                        "semifinal": 35.21126760563381,
+                        "final": 21.27659574468085,
+                        "win": 9.523809523809524,
+                        "type": "grey",
+                        "level": "#5472A4",
+                        "icon": "images/flags/cro.png",
+                      },
+                ]
+              },
+            ]
+          },
+          {
+            "name": "Second Semi-Finalist Classified",
+            "parent": "Finalist 1",
+            "type": "grey",
+            "children":[
+                  {
+                    "name": "3rd Quarter Final Classified",
+                    "type": "steelblue",
+                    "children":[
+                      {
+                        "name": "Wales",
+                        "level": "#164C16",
+                        "quarter": 68.02721088435374,
+                        "semifinal": 24.39024390243903,
+                        "final":  8.695652173913043,
+                        "win": 3.3333333333333335,
+                        "icon": "images/flags/wal.png" ,
+                      },
+                      {
+                        "name": "Northern Ireland",
+                        "quarter": 33.33333333333333,
+                        "semifinal": 8.695652173913043,
+                        "final":  1.3333333333333335,
+                        "win": 0.3125,
+                        "icon": "images/flags/ni.png" ,
+                        "level": "#5F1B1B",
+                      },
+
+                    ]
+                  },
+                  {
+                    "name": "4th Quarter Final Classified",
+                    "type": "steelblue",
+                    "children":[
+                      {
+                        "name": "Hungary",
+                        "quarter": 25.0,
+                        "semifinal": 11.11111111111111,
+                        "final":  3.44827586206896535,
+                        "win": 0.8333333333333334,
+                        "icon": "images/flags/hun.png",
+                        "level": "#FF1B03",
+                      },
+                      {
+                        "name": "Belgium",
+                        "quarter": 78.125,
+                        "semifinal": 57.47126436781609,
+                        "final": 32.25806451612903,
+                        "win": 12.820512820512823,
+                        "icon": "images/flags/bel.png" ,
+                        "level": "#F7EC73",
+                      },
+                    ]
+                  },
+                  
+                ]
+          }
+        ]
+      },
+      {
+        "name": "Finalist 2",
+        "type": "grey",
+        "children":[
+          {
+            "name": "Third Semi-Finalist Classified",
+            "parent": "Finalist 2",
+            "type": "grey",
+            "children":[
+                  {
+                    "name": "5th Quarter Final Classified",
+                    "type": "steelblue",
+                    "children":[
+                      {
+                        "name": "Slovakia",
+                        "quarter": 15.625,
+                        "semifinal": 5.0,
+                        "final": 1.3333333333333335,
+                        "win": 0.4,
+                        "icon": "images/flags/svk.png" ,
+                        "level": "#231C44",
+                      },
+                      {
+                        "name": "Germany",
+                        "quarter": 84.03361344537815,
+                        "semifinal": 42.73504273504274,
+                        "final": 26.31578947368421,
+                        "win": 16.129032258064516,
+                        "icon": "images/flags/ger.png" ,
+                        "level": "#FFAB03",
+                      },
+
+                    ]
+                  },
+                  {
+                    "name": "6th Quarter Final Classified",
+                    "type": "steelblue",
+                    "children":[
+                      {
+                        "name": "Italy",
+                        "quarter": 37.878787878787875,
+                        "semifinal": 17.857142857142858,
+                        "final": 8.695652173913043,
+                        "win": 5.263157894736842,
+                        "icon": "images/flags/ita.png" ,
+                        "level": "#135900",
+                      },
+                      {
+                        "name": "Spain",
+                        "quarter": 64.1025641025641,
+                        "semifinal": 35.46099290780142,
+                        "final": 21.27659574468085,
+                        "win": 13.88888888888889,
+                        "icon": "images/flags/spa.png" ,
+                        "level": "#E0E038",
+                      },
+                    ]
+                  },
+
+
+                  
+                ]
+              },
+          {
+            "name": "Fourth Semi-Finalist Classified",
+            "parent": "Finalist 2",
+            "type": "grey",
+            "children":[
+                  {
+                    "name": "7th Quarter Final Classified",
+                    "children":[
+                      {
+                        "name": "France",
+                        "quarter": 83.33333333333334,
+                        "semifinal": 55.55555555555556,
+                        "final": 28.985507246376812,
+                        "win": 18.51851851851852,
+                        "icon": "images/flags/fra.png" ,
+                        "level": "#455AC8",
+                      },
+                      {
+                        "name": "Rep Of Ireland",
+                        "quarter": 18.51851851851852,
+                        "semifinal": 6.666666666666667,
+                        "final": 1.6666666666666667,
+                        "win": 0.5555555555555556,
+                        "icon": "images/flags/ire.png" ,
+                        "level":"#E08438",
+                      },
+
+                    ]
+                  },
+                  {
+                    "name": "8th Quarter Final Classified",
+                    "type": "blue",
+                    "children":[
+                      {
+                        "name": "Iceland",
+                        "quarter": 21.27659574468085,
+                        "semifinal": 5.88235294117647,
+                        "final": 1.1764705882352942,
+                        "win": 0.5555555555555556,
+                        "icon": "images/flags/ice.png" ,
+                        "level": "#27738C",
+                      },
+                      {
+                        "name": "England",
+                        "quarter": 80.64516129032259,
+                        "semifinal": 35.46099290780142,
+                        "final": 13.88888888888889,
+                        "win": 9.090909090909092,
+                        "icon": "images/flags/eng.png" ,
+                        "level": "#B36262",
+                      },
+                    ]
+                  },
+                  
+                ]
+          }
+        ]
+      },
+
+    ]
+  }
+];
+
+// function play_against(Team1,Team2):
+root = treeData[0];
+// var quarters = [];
+// tamanho = root.children.length
+
+// // for(i = 0; i++; i< tamanho){
+// //   alert(root.children[i].quarter);
+// //   quarters.push(root.children[i].quarter);
+// // }
+
+root.x0 = height / 2;
+root.y0 = 0;
+
+function collapse(d) {
+  if (d.children) {
+    d._children = d.children;
+    d._children.forEach(collapse);
+    d.children = null;
+  }
+}
+
+function openPaths(paths){
+    for(var i =0;i<paths.length;i++){
+      if(paths[i].id !== "1"){//i.e. not root
+        paths[i].class = 'found';
+        if(paths[i]._children){ //if children are hidden: open them, otherwise: don't do anything
+          paths[i].children = paths[i]._children;
+            paths[i]._children = null;
+        }
+        update(paths[i]);
+      }
+    }
+  }
+
+//root.children.forEach(collapse);
+update2(root);
+
+/////////////////////////////////
+//
+//              FLAGS
+//
+/////////////////////////////////
+
+// d3.csv("matches.csv" )
+//     .row(function(d) { 
+//       size = treeData[0].children.length;
+//       for(i = 0; i++; i < size){
+//         alert(treeData[0].children[i].name);
+//         if(treeData[0].children[i].name == d.Team_1){
+//           alert(d.Team_1);
+//         }
+//       }
+//       return {Team_1: d.Team_1, Team_2: d.Team_2}; })
+//     .get(function(error, rows) { console.log(rows); });
+
+
+
+
+
+
+// // ************** Generate the tree diagram  *****************
+// var margin = {top: 20, right: 120, bottom: 20, left: 120},
+//   width = 960 - margin.right - margin.left,
+//   height = 500 - margin.top - margin.bottom;
+  
+// var i = 0;
+
+// var tree = d3.layout.tree()
+//   .size([height, width]);
+
+// var tree1 = d3.layout.tree()
+//   .size([height, width]);
+
+// var diagonal = d3.svg.diagonal()
+//   .projection(function(d) { return [d.y, d.x]; });
+
+// var svg = d3.select("body").append("svg")
+//   .attr("width", width + margin.right + margin.left)
+//   .attr("height", height + margin.top + margin.bottom)
+//   .append("g")
+//   .attr("transform", 
+//         "translate(" + margin.left + "," + margin.top + ")");
+
+
+// root2 = treeData[0];
+// update(root2,tree);
+
+// // root2 = treeData[1];
+// // update(root2,tree1);
+
+
+
+// function update(source,var_tree) {
+
+//   // Compute the new tree layout.
+//   var nodes = var_tree.nodes(root2).reverse(),
+//     links = var_tree.links(nodes);
+
+//   // Normalize for fixed-depth.
+//   nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+//   // Declare the nodes…
+//   var node = svg.selectAll("g.node")
+//     .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+//   // Enter the nodes.
+//   var nodeEnter = node.enter().append("g")
+//     .attr("class", "node")
+//     .attr("transform", function(d) { 
+//       return "translate(" + d.y + "," + d.x + ")"; });
+
+//   nodeEnter.append("image")
+//       .attr("xlink:href", function(d) { return d.icon; })
+//       .attr("x", "-12px")
+//       .attr("y", "-12px")
+//       .attr("width", "24px")
+//       .attr("height", "24px");
+
+//   nodeEnter.append("text")
+//     .attr("x", function(d) { 
+//       return d.children || d._children ? 
+//       (15) * -1 : + 15 })
+//     .attr("dy", ".35em")
+//     .attr("text-anchor", function(d) { 
+//       return d.children || d._children ? "end" : "start"; })
+//     .text(function(d) { return d.name; })
+//     .style("fill-opacity", 1)
+//     .style("fill","white");
+
+//   // Declare the links…
+//   var link = svg.selectAll("path.link")
+//     .data(links, function(d) { return d.target.id; })
+//     .attr("stroke-width", function(d) { return d.target.quarter/10; });
+
+//   var c10 = d3.scale.category10();
+
+//   // Enter the links.
+//   link.enter().insert("path", "g")
+//     .attr("class", "link")
+//     .style("stroke",c10)
+//     .attr("stroke-width", function(d) { return (d.target.value); })
+//     .attr("d", diagonal);
+
+// }
+
+</script>
+  
+  </body>
+</html>
