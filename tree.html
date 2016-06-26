@@ -107,7 +107,7 @@
       <div class="jumbotron" id="area">
         <h4>Probabilities:</h4>
         <div class="row" id="probabilities">
-          <div id="win_probability" class="col-md-3">Win: <span></span></div>
+          <div id="win_probability" class="col-md-3">To Win: <span></span></div>
           <div id="final_probability" class="col-md-3">Final: <span></span></div>
           <div id="semifinal_probability" class="col-md-3">Semifinal: <span></span></div>
           <div id="quarter_probability" class="col-md-3">Quarter Final: <span></span></div>
@@ -484,6 +484,7 @@
           else{
             $("#probabilities > span").text("");
           }
+        }
       };
       parentLine(d);
       return update2(d);
