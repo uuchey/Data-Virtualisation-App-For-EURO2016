@@ -3,14 +3,13 @@
   <head>
     <meta charset="utf-8">
 
-    <!-- for django template rendering 
+     <!-- for django template rendering 
     {% load staticfiles %}
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet">-->
+    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet"> 
 
+     -->
     <link href="css/bootstrap.min.css"  rel="stylesheet">
-    <link href="css/flag-icon.min.css" rel="stylesheet"> <!-- -->
-
     <title>EURO 2016</title>
 
 
@@ -21,7 +20,7 @@
           stroke-width: 1px;
         }
 
-        .node text { font: 12px sans-serif; }
+        .node text { font: 14px sans-serif; }
 
         .link {
           fill: none;
@@ -31,6 +30,48 @@
 
         path.highlight {
            stroke: yellow;
+        }
+
+        div.tooltip {
+          position: absolute;
+          text-align: left;
+          width: 140px;
+          height: 60px;
+          padding: 2px;
+          font: 12px sans-serif;
+          background: lightsteelblue;
+          border: 0px;
+          border-radius: 8px;
+          pointer-events: none;
+          color: black;
+        }
+        .d3-tip {
+          line-height: 1;
+          font-weight: bold;
+          padding: 12px;
+          background: rgba(0, 0, 0, 0.8);
+          color: #fff;
+          border-radius: 2px;
+        }
+
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+          box-sizing: border-box;
+          display: inline;
+          font-size: 10px;
+          width: 100%;
+          line-height: 1;
+          color: rgba(0, 0, 0, 0.8);
+          content: "\25BC";
+          position: absolute;
+          text-align: center;
+        }
+
+        /* Style northward tooltips differently */
+        .d3-tip.n:after {
+          margin: -1px 0 0 0;
+          top: 100%;
+          left: 0;
         }
     </style>
 
@@ -45,15 +86,17 @@
       <p class="text-warning">Probability Data collected from BetFair</p>
     </div>
 
-
-    <!-- load the d3.js library --> 
+    <!-- load the d3.js library -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="js/d3.min.js"></script>
-    <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+
+    
 
     <script>
 
     var gradient = ["#FFFFFF", "#DBBADB", "#B776B7", "#943294", "#4A194A", "#000000", "#11754D", "#23EB9B", "#87DB5A", "#EBCC1A", "#81897C", "#1846DE", "#846788", "#F08833", "#F6482B", "#FC0824"];
 
+    //the data
     var treeData = [
       {
         "name": "Winner",
@@ -304,7 +347,6 @@
       }
     ];
 
-
     var margin = {top: 20, right: 120, bottom: 20, left: 120},
       width = 960 - margin.right - margin.left,
       height = 500 - margin.top - margin.bottom;
@@ -342,6 +384,14 @@
       // }
     };
 
+    var tooltip = d3.select("body")
+      .append("div")
+      .data(treeData)
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+      .text(function(d){ return d.quarter ;});
+
     var svg2 = d3.select("body")
       .selectAll("svg")
       .data(d3.entries(orientations))
@@ -352,7 +402,6 @@
       .append("g")
       .attr("id","flags")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
     toggle = function(d) {
       if (d.children) {
@@ -380,24 +429,23 @@
       return _results;
     };
 
+    // countries_and_colors = [];
 
+    // () ;
 
 
     //highlight nodes
     highlightOn = function(d) {
+      var quarter, semifinal, final_c, win
       var parentLine;
-      alert("Meu pai é" + d.parent.name);
-      
-
       parentLine = function(d) {
-        alert(d.name);
         if (d.parent) {
           parentLine(d.parent);
-          var l = svg2.selectAll("path.link.source-" + d.parent.name + ".target-" + d.name).classed('highlight', true);    
-          console.log(l);      
+          if((d.parent.name) && (d.name)){
+            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true);      
+          } 
         }
       };
-
       parentLine(d);
       return update2(d);
     };
@@ -410,7 +458,6 @@
 
     // Toggle children on click.
     function click(d) {
-      //alert(d.name);
       if (d.children) {
         d._children = d.children;
         d.children = null;
@@ -438,18 +485,75 @@
       var node = svg2.selectAll("g.node")
         .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
+      // add the tool tip
+      var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
       // Enter any new nodes at the parent's previous position.
       var nodeEnter = node.enter().append("svg:g")
         .attr("class", "node")
         .attr("quarter", function(d) {  
           if(d.quarter){
-            return d.quarter
+            return d.quarter;
           }
-          // return d.quarter; 
+        })
+        .attr({
+          quarter: function (d) { 
+            team_name = d.name;
+            if(d.depth == 3){
+              team1 = d.children[0].quarter;
+              team2 = d.children[1].quarter;
+              if(team1 > team2){
+                d.title = d.children[0].name;
+                d.quarter = d.children[0].semifinal;
+                d.final = d.children[0].final;
+                d.win = d.children[0].win;
+              }else{
+                d.title = d.children[1].name;
+                d.quarter = d.children[1].semifinal;
+                d.final = d.children[1].final;
+                d.win = d.children[1].win;
+              }
+              team_name = d.title;
+              return d.quarter;
+            }
+            else{
+              if(d.depth != 4){
+                team1 = d.children[0].quarter;
+                team2 = d.children[1].quarter;
+                if(team1 > team2){
+                  d.title = d.children[0].title;
+                  d.quarter = d.children[0].final;
+                  d.final = d.children[0].final;
+                  d.win = d.children[0].win;
+                  if(d.depth == 1 || d.depth == 0){
+                    d.quarter = d.win;
+                  }
+                }else{
+                  d.title = d.children[1].title;
+                  d.quarter = d.children[1].final;
+                  d.final = d.children[1].final;
+                  d.win = d.children[1].win;
+                  if(d.depth == 1 || d.depth == 0){
+                    d.quarter = d.win;
+                  }
+                }
+
+                team_name = d.title;
+                return d.quarter;
+              } 
+            }
+          }
         })
         .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
+          if(d.depth == 4){ 
+            team_name2 = d.name; 
+          } else { 
+            team_name2 = d.title;
+          }
           highlightOn(d);
           if (d3.event.metaKey) {
             highlightOn(d);
@@ -458,99 +562,132 @@
             highlightOn(d);
           }
           update2(d);
-        })
-        .on("mouseout", function(d) { 
-          highlightOff(d)
-        });
+          
+          div.transition()
+          .duration(300)
+          .style("opacity", .9);
+          
+          div.html(
+              "Team: " + team_name2 + "<br/>" + 
+              "Probability: " + d.quarter + "<br/>"
+            )
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+          })
+          .on("mouseout", function(d) { 
+            div.transition()
+              .duration(500)
+              .style("opacity", 0);
+            highlightOff(d);
+          }
+        );
 
         nodeEnter.append("circle")
           .style("fill", function(d) { return d._children ? "#7a8288" : "lightsteelblue"; })
           .attr("r", function(d) { return d._children ? 1e-6 : 5; });
 
-      nodeEnter.append("image")
+        nodeEnter.append("image")
           .attr("xlink:href", function(d) { return d.icon; })
           .attr("x", "-12px")
           .attr("y", "-12px")
           .attr("width", "24px")
           .attr("height", "24px");
 
-      nodeEnter.append("text")
-        .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
-        .attr("dy", ".35em")
-        .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-        .text(function(d) { return d.name; })
-        .style("fill-opacity", 1e-6)
-        .style("fill","white");
-
-      // Transition nodes to their new position.
-      var nodeUpdate = node.transition()
-        .duration(duration)
-        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-
-      nodeUpdate.select("circle")
-        .attr("r", function(d) { return d._children ? 10 : 5; })
-        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#7a8288"; });
-
-      nodeUpdate.select("text")
-        .style("fill-opacity", 1);
-
-      // Transition exiting nodes to the parent's new position.
-      var nodeExit = node.exit().transition()
-        .duration(duration)
-        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; }).remove();
-
-      nodeExit.select("circle")
-        .attr("r", 1e-6);
-
-      nodeExit.select("text")
-        .style("fill-opacity", 1e-6);
-
-      // Update the links…
-      var link = svg2.selectAll("path.link")
-        .data(links,
-          function(d) { 
-            return d.target.id; 
+        nodeEnter.append("text")
+          .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+          .attr("dy", ".35em")
+          .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+          .text(function(d) { return d.name; })
+          .style("fill-opacity", 1e-6)
+          .style("fill",function(d){
+            if(d.depth == 3){
+              return "#5bc0de";
+            }
+            if(d.depth == 2){
+              return "#62c462";
+            }if(d.depth == 1){
+              return "#f89406";
+            }
+            if(d.depth == 0){
+              return "#ee5f5b"
+            }
+            else{
+              return "white";
+            }
           });
-        
-      link.enter().insert("svg:path", "g")
-        .attr("class", function(d) {
-          return "link source-" + d.source.name + " target-" + d.target.name;
-        }).
-        style("stroke", function(d) { return d.target.level; })
-        .style("stroke-width", function(d) { return d.target.quarter/10; })
-        .on("mouseover",function(d){
-          highlightOn(d);
-          if (d3.event.metaKey) {
-            highlightOn(d);
-          } else {
-            highlightOff(d);
-            highlightOn(d);
-          }
-          update2(d);
-        })
-        .on("mouseout", function(d) { 
-          highlightOff(d)
-        })
-        .attr("d", function(d) {
-        var o = {x: source.x0, y: source.y0};
-          return diagonal({source: o, target: o});
-        }).transition().duration(duration).attr("d", diagonal);;
 
-      // Transition links to their new position.
-      link.transition()
-        .duration(duration)
-        .attr("d", diagonal)
-        .style("stroke-width", function(d) { 
-          return d.target.quarter/10; 
+        // Transition nodes to their new position.
+        var nodeUpdate = node.transition()
+          .duration(duration)
+          .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+
+        nodeUpdate.select("circle")
+          .attr("r", function(d) { return d._children ? 10 : 5; })
+          .style("fill", function(d) { return d._children ? "lightsteelblue" : "#7a8288"; });
+
+        nodeUpdate.select("text")
+          .style("fill-opacity", 1);
+
+        // Transition exiting nodes to the parent's new position.
+        var nodeExit = node.exit().transition()
+          .duration(duration)
+          .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; }).remove()
+
+
+        nodeExit.select("circle")
+          .attr("r", 1e-6);
+
+        nodeExit.select("text")
+          .style("fill-opacity", 1e-6);
+
+        // Update the links…
+        var link = svg2.selectAll("path.link")
+          .data(links,
+            function(d) { 
+              return d.target.id; 
         });
+        
+        link.enter().insert("svg:path", "g")
+          .attr("class", function(d) {
+            if((d.source.name) && (d.target.name)){
+              return "link source-" + d.source.name.replace(/\s/g,"_") + " target-" + d.target.name.replace(/\s/g,"_");
+            }
+          })
+          // .style("stroke", function(d) { return d.target.level; })
+          .style("stroke-width", function(d) { return d.target.quarter/10; })
+          .on("mouseover",function(d){
+            highlightOn(d);
+            if (d3.event.metaKey) {
+              highlightOn(d);
+            } else {
+              highlightOff(d);
+              highlightOn(d);
+            }
+            update2(d);
+          })
+          .on("mouseout", function(d) { 
+            highlightOff(d)
+          })
+          .attr("d", function(d) {
+            var o = {x: source.x0, y: source.y0};
+              return diagonal({source: o, target: o});
+          }).transition().duration(duration).attr("d", diagonal);
 
-      // Transition exiting nodes to the parent's new position.
-      link.exit().transition()
-        .duration(duration)
-        .attr("d", function(d) {
-          var o = {x: source.x, y: source.y};
-          return diagonal({source: o, target: o});
-      });
+          // Transition links to their new position.
+          link.transition()
+            .duration(duration)
+            .attr("d", diagonal)
+            .style("stroke-width", function(d) { 
+              return d.target.quarter/10; 
+            });
+
+          // Transition exiting nodes to the parent's new position.
+          link.exit().transition()
+            .duration(duration)
+            .attr("d", function(d) {
+              var o = {x: source.x, y: source.y};
+              return diagonal({source: o, target: o});
+          });
 
       // Stash the old positions for transition.
       return nodes.forEach(function(d) {
@@ -560,14 +697,12 @@
 
     }
 
-  root = treeData[0];
+    root = treeData[0];
 
-  root.x0 = height / 2;
-  root.y0 = 0;
+    root.x0 = height / 2;
+    root.y0 = 0;
 
-  update2(root);
-
-
+    update2(root);
 
 </script>
   
