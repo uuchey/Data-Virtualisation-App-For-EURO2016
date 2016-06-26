@@ -564,21 +564,24 @@
         .attr({
           quarter: function (d) { 
             team_name = d.name;
-            d_icon = d.icon;
             var c = 0;
             if(d.depth == 3){
               team1 = d.children[0].quarter;
               team2 = d.children[1].quarter;
+              
+
               if(team1 > team2){
                 c = 0;
               }else{
                 c = 1;
               }
+
               d.title = d.children[c].name;
               d.quarter = d.children[c].semifinal;
               d.final = d.children[c].final;
               d.win = d.children[c].win;
-              d_icon = d.children[c].icon;
+
+              d_icon = d.icon;
               team_name = d.title;
               return d.quarter;
             }
@@ -595,19 +598,16 @@
                   if(d.depth == 1 || d.depth == 0){
                     d.quarter = d.win;
                   }
-                  d_icon = d.children[].icon;
                 }else{
                   d.title = d.children[1].title;
                   d.quarter = d.children[1].final;
                   d.final = d.children[1].final;
                   d.win = d.children[1].win;
-
                   if(d.depth == 1 || d.depth == 0){
                     d.quarter = d.win;
                   }
-                  d_icon = d.children[].icon;
                 }
-                
+                d_icon = d.icon;
                 team_name = d.title;
                 return d.quarter;
               } 
