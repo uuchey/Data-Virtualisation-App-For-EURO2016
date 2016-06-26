@@ -96,6 +96,7 @@
 
     var gradient = ["#FFFFFF", "#DBBADB", "#B776B7", "#943294", "#4A194A", "#000000", "#11754D", "#23EB9B", "#87DB5A", "#EBCC1A", "#81897C", "#1846DE", "#846788", "#F08833", "#F6482B", "#FC0824"];
 
+    //the data
     var treeData = [
       {
         "name": "Winner",
@@ -541,7 +542,11 @@
         .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
-          // team_name = d.name;
+          if(d.depth == 4){ 
+            team_name2 = d.name; 
+          } else { 
+            team_name2 = d.title;
+          }
           // if(d.depth == 3){
           //   team1 = d.children[0].quarter;
           //   team2 = d.children[1].quarter;
@@ -591,7 +596,7 @@
           .style("opacity", .9);
           
           div.html(
-              "Team: " + d.title + "<br/>" + 
+              "Team: " + team_name2 + "<br/>" + 
               "Probability: " + d.quarter + "<br/>"
             )
             .style("left", (d3.event.pageX) + "px")
