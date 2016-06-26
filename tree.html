@@ -487,7 +487,7 @@
             $("#win_probability span").text(parseFloat(percentages[3].toFixed(2)) + "%");
           }
           else{
-            $("#probabilities span").text("");
+            $("#probabilities span").text(" ");
           }
         }
       };
@@ -498,7 +498,7 @@
 
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false);
-      $("#probabilities span").text("");
+      $("#probabilities span").text(" ");
       return update2(d);
     };
 
@@ -621,7 +621,7 @@
             .style("top", (d3.event.pageY - 28) + "px");
           })
           .on("mouseout", function(d) { 
-            $("#probabilities span").text("");
+            $("#probabilities span").text(" ");
             div.transition()
               .duration(500)
               .style("opacity", 0);
@@ -713,7 +713,7 @@
             update2(d);
           })
           .on("mouseout", function(d) { 
-            $("#probabilities span").text("");
+            $("#probabilities span").text(" ");
             highlightOff(d)
           })
           .attr("d", function(d) {
