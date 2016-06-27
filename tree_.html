@@ -492,7 +492,7 @@
         if (d.parent) {
           parentLine(d.parent);
           if((d.parent.name) && (d.name)){
-            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true).style("stroke-width", function(d) { return d.target.quarter/2; })    
+            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true);      
           } 
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
@@ -513,7 +513,7 @@
 
 
     highlightOff = function(d) {
-      svg2.selectAll("path.link").classed('highlight', false).style("stroke-width", function(d) { return d.target.quarter/10; }) 
+      svg2.selectAll("path.link").classed('highlight', false);
       $(".span").text(" ");
       return update2(d);
     };
@@ -640,7 +640,7 @@
           div.html(
               "Team: " + team_name2 + "<br/>" + 
               "Probability: " + parseFloat(d.quarter.toFixed(2)) + " %" +
-              "<image xlink href=" + d_icon + " height=" + 2 +">" + "</div><image src=" + d_icon + ">"
+              "<image xlink href=" + d_icon + " height=" + 4 +">" + "</div><image src=" + d_icon + ">"
             )
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
@@ -658,14 +658,12 @@
           .style("fill", function(d) { return d._children ? "#7a8288" : "lightsteelblue"; })
           .attr("r", function(d) { return d._children ? 1e-6 : 5; });
 
-
         nodeEnter.append("image")
           .attr("xlink:href", function(d) { return d.icon; })
           .attr("x", "-12px")
           .attr("y", "-12px")
           .attr("width", "24px")
           .attr("height", "24px");
-
 
         nodeEnter.append("text")
           .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
