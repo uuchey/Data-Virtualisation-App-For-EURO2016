@@ -391,26 +391,11 @@
       .projection(function(d) { return [d.y, d.x]; });
 
     var orientations = {
-      // "top-to-bottom": {
-      //   size: [width, height],
-      //   x: function(d) { return d.x; },
-      //   y: function(d) { return d.y; }
-      // },
       "right-to-left": {
         size: [height, width],
         x: function(d) { return width - d.y; },
         y: function(d) { return d.x; }
       },
-      // "bottom-to-top": {
-      //   size: [width, height],
-      //   x: function(d) { return d.x; },
-      //   y: function(d) { return height - d.y; }
-      // },
-      // "left-to-right": {
-      //   size: [height, width],
-      //   x: function(d) { return d.y; },
-      //   y: function(d) { return d.x; }
-      // }
     };
 
     var tooltip = d3.select("#area")
@@ -472,7 +457,7 @@
         if (d.parent) {
           parentLine(d.parent);
           if((d.parent.name) && (d.name)){
-            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true);      
+            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true).style("stroke-width", function(d) { return d.target.quarter/10; });   
           } 
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
@@ -493,7 +478,7 @@
 
 
     highlightOff = function(d) {
-      svg2.selectAll("path.link").classed('highlight', false);
+      svg2.selectAll("path.link").classed('highlight', false).style("stroke-width", function(d) { return d.target.quarter/2; }); 
       $(".span").text(" ");
       return update2(d);
     };
