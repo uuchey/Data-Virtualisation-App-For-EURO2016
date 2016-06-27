@@ -581,8 +581,7 @@
                 d.win = d.children[1].win;
                 d.icon = d.children[1].icon;
               }
-              console.log(d.icon);
-              d_icon = d.icon;
+              //d_icon = d.icon;
               team_name = d.title;
               return d.quarter;
             }
@@ -635,8 +634,8 @@
           update2(d);
           
           div.transition()
-          .duration(300)
-          .style("opacity", .9);
+            .duration(300)
+            .style("opacity", .9);
           
           div.html(
               "Team: " + team_name2 + "<br/>" + 
