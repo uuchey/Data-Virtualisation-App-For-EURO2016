@@ -596,8 +596,8 @@
           });
 
         nodeEnter.append("text")
-          .attr("x", function(d) { return d.children || d._children ? 40 : 13; })
-          .attr("dy", function(d) { return d.children || d._children ? "1.5em" : ".35em" })
+          .attr("x", function(d) { return d.children || d._children ? 50 : 13; })
+          .attr("dy", function(d) { return d.children || d._children ? "2em" : ".35em" })
           .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
           .text(function(d) { return d.name; })
           .style("fill-opacity", 1e-6)
