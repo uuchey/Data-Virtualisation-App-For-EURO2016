@@ -457,7 +457,7 @@
         if (d.parent) {
           parentLine(d.parent);
           if((d.parent.name) && (d.name)){
-            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true).style("stroke-width", function(d) { return d.target.quarter; });   
+            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true).style("stroke-width", function(d) { return d.target.quarter/3; });   
           } 
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
@@ -654,6 +654,9 @@
 
         nodeUpdate.select("text")
           .style("fill-opacity", 1);
+
+        nodeUpdate.select("image")
+          .style("display", "block");
 
         // Transition exiting nodes to the parent's new position.
         var nodeExit = node.exit().transition()
