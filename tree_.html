@@ -608,7 +608,6 @@
                     d.quarter = d.win;
                   }
                 }
-                d_icon = d.icon;
                 team_name = d.title;
                 return d.quarter;
               } 
@@ -619,8 +618,10 @@
         .on("click", click)
         .on("mouseover",function(d){
           if(d.depth == 4){ 
+            d_icon = d.icon;
             team_name2 = d.name; 
           } else { 
+            d_icon = d.icon;
             team_name2 = d.title;
           }
           highlightOn(d);
