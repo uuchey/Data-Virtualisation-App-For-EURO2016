@@ -40,7 +40,6 @@ for subdir, dirs, files in os.walk(rootdir):
     for file in files:
         if (file.endswith('Table1.csv')):
             print file #print filename
-            #abre o arquivo, le e salva em uma lista as linhas do arquivo
             f = open(rootdir + file,'r') #use the absolute URL of the file
             lines = f.readlines()
 
