@@ -538,7 +538,8 @@
             }
           }
         })
-        
+        .attr("cx", function(d) { return width - d.y; })
+        .attr("cy", function(d){ return d.x; })
         .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .on("click", click)
         .on("mouseover",function(d){
