@@ -56,20 +56,13 @@
           width: 140px;
           height: 100px;
           padding: 2px;
-          font: 12px sans-serif;
+          font: 14px sans-serif;
           background: lightsteelblue;
           border: 0px;
           border-radius: 8px;
           pointer-events: none;
           color: black;
-        }
-        .d3-tip {
-          line-height: 1;
-          font-weight: bold;
-          padding: 12px;
-          background: rgba(0, 0, 0, 0.8);
-          color: #fff;
-          border-radius: 2px;
+          text-align: center;
         }
     </style>
     <!-- load the jquery and d3.js libraries
@@ -427,27 +420,6 @@
       }
     };
 
-    closeNodes = function(root) {
-      var d, _i, _len, _ref, _results;
-      _ref = root.children;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        d = _ref[_i];
-        if (d.children) {
-          d.children = d._children;
-          _results.push(d._children = null);
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    };
-
-    // countries_and_colors = [];
-
-    // () ;
-
-
     //highlight nodes
     highlightOn = function(d) {
       var quarter, semifinal, final_c, win
@@ -476,7 +448,7 @@
       return update2(d);
     };
 
-
+    //highlight off
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false).style("stroke-width", function(d) { return d.target.quarter/10; }); 
       $(".span").text(" ");
