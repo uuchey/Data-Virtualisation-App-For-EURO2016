@@ -407,11 +407,12 @@
       }
     };
 
+    var percentages = [];
     //highlight nodes
     highlightOn = function(d) {
       var quarter, semifinal, final_c, win
       var parentLine;
-      var percentages = [];
+      
       parentLine = function(d) {
         if (d.parent) {
           parentLine(d.parent);
