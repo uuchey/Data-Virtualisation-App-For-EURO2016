@@ -3,12 +3,6 @@
   <head>
     <meta charset="utf-8">
 
-     <!-- for django template rendering 
-    {% load staticfiles %}
-    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/flag-icon.min.css" %}" rel="stylesheet"> 
-
-     -->
     <link href="css/bootstrap.min.css"  rel="stylesheet">
     <title>EURO 2016 - Data Visualization using D3.js</title>
 
@@ -56,27 +50,18 @@
           width: 140px;
           height: 100px;
           padding: 2px;
-          font: 12px sans-serif;
+          font: 14px sans-serif;
           background: lightsteelblue;
           border: 0px;
           border-radius: 8px;
           pointer-events: none;
           color: black;
-        }
-        .d3-tip {
-          line-height: 1;
-          font-weight: bold;
-          padding: 12px;
-          background: rgba(0, 0, 0, 0.8);
-          color: #fff;
-          border-radius: 2px;
+          text-align: center;
         }
     </style>
-    <!-- load the jquery and d3.js libraries
-    <script src="http://d3js.org/d3.v3.min.js"></script>-->
+    
     <script src="js/d3.min.js"></script>
-    <script src="js/jquery.min.js"></script>
-
+    
   </head>
 
   <body class="text-center">
@@ -92,10 +77,6 @@
           <p>Hover over the fixture node to show the most likely team to be its winner.</p>
         </div>
       </row>
-      
-
-      <!-- <img src="{% static "images/euro-logo.png" %}" height="100"> -->
-      
     </div>
     <div class="container text-center">
       <h3>Probabilities</h3>
@@ -122,9 +103,6 @@
     </div>
 
     <script>
-
-    var gradient = ["#FFFFFF", "#DBBADB", "#B776B7", "#943294", "#4A194A", "#000000", "#11754D", "#23EB9B", "#87DB5A", "#EBCC1A", "#81897C", "#1846DE", "#846788", "#F08833", "#F6482B", "#FC0824"];
-
     //the data
     var treeData = [
       {
@@ -376,6 +354,7 @@
       }
     ];
 
+    // create graph
     var margin = {top: 20, right: 120, bottom: 20, left: 120},
       width = 960 - margin.right - margin.left,
       height = 500 - margin.top - margin.bottom;
@@ -384,6 +363,7 @@
       duration = 750,
       root;
 
+    //generate tree
     var treeDynamic = d3.layout.tree()
       .size([height, width]);
 
@@ -427,27 +407,6 @@
       }
     };
 
-    closeNodes = function(root) {
-      var d, _i, _len, _ref, _results;
-      _ref = root.children;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        d = _ref[_i];
-        if (d.children) {
-          d.children = d._children;
-          _results.push(d._children = null);
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    };
-
-    // countries_and_colors = [];
-
-    // () ;
-
-
     //highlight nodes
     highlightOn = function(d) {
       var quarter, semifinal, final_c, win
@@ -457,7 +416,7 @@
         if (d.parent) {
           parentLine(d.parent);
           if((d.parent.name) && (d.name)){
-            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true).style("stroke-width", function(d) { return d.target.quarter/2; });   
+            svg2.selectAll("path.link.source-" + d.parent.name.replace(/\s/g,"_") + ".target-" + d.name.replace(/\s/g,"_")).classed('highlight', true).style("stroke-width", function(d) { return d.target.quarter/3; });   
           } 
           if(d.depth == 4){
             percentages = [d.quarter,d.semifinal,d.final,d.win];
@@ -476,7 +435,7 @@
       return update2(d);
     };
 
-
+    //highlight off
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false).style("stroke-width", function(d) { return d.target.quarter/10; }); 
       $(".span").text(" ");
@@ -496,7 +455,7 @@
       update2(d);
     }
 
-
+    //create and update d3.js graph
     function update2(source) {
       var link, node, nodeEnter, nodeExit, nodeUpdate, nodes;
       var duration = d3.event && d3.event.altKey ? 5000 : 500;
@@ -618,11 +577,18 @@
           .attr("x", "-12px")
           .attr("y", "-12px")
           .attr("width", "24px")
-          .attr("height", "24px");
+          .attr("height", "24px")
+          .style("display",function(d){
+            if(d.depth == 4){
+              return "block";
+            }else{
+              return "none";
+            }
+          });
 
         nodeEnter.append("text")
-          .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
-          .attr("dy", ".35em")
+          .attr("x", function(d) { return d.children || d._children ? 30 : 13; })
+          .attr("dy", function(d) { return d.children || d._children ? "1em" : ".35em" })
           .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
           .text(function(d) { return d.name; })
           .style("fill-opacity", 1e-6)
@@ -656,7 +622,9 @@
           .style("fill-opacity", 1);
 
         nodeUpdate.select("image")
-          .style("display", "block");
+          .style("display",function(d){
+            return d._children || d.depth ==4 ? "block" : "none";
+          });
 
         // Transition exiting nodes to the parent's new position.
         var nodeExit = node.exit().transition()
