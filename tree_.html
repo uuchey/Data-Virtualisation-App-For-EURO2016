@@ -529,14 +529,13 @@
         .attr({
           quarter: function (d) { 
             team_name = d.name;
-            c = -1;
             if(d.depth == 3){
               team1 = d.children[0].quarter;
               team2 = d.children[1].quarter;
               if(team1 > team2){
-                c = 0;
+                var c = 0;
               }else{
-                c = 1;
+                var c = 1;
               }
               d.title = d.children[c].name;
               d.quarter = d.children[c].semifinal;
@@ -548,13 +547,12 @@
             }
             else{
               if(d.depth != 4){
-                var m = -1;
                 team1 = d.children[0].quarter;
                 team2 = d.children[1].quarter;
                 if(team1 > team2){
-                  m = 0;
+                  var m = 0;
                 }else{
-                  m = 1;
+                  var m = 1;
                 }
                 if(d.depth == 1 || d.depth == 0){
                   d.quarter = d.win;
