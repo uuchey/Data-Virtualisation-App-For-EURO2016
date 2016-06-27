@@ -557,11 +557,11 @@
                 if(d.depth == 1 || d.depth == 0){
                   d.quarter = d.win;
                 }
-                d.title = d.children[0].title;
-                d.quarter = d.children[0].final;
-                d.final = d.children[0].final;
-                d.win = d.children[0].win;
-                d.icon = d.children[0].icon;
+                d.title = d.children[m].title;
+                d.quarter = d.children[m].final;
+                d.final = d.children[m].final;
+                d.win = d.children[m].win;
+                d.icon = d.children[m].icon;
                 team_name = d.title;
                 return d.quarter;
               } 
