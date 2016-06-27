@@ -634,7 +634,13 @@
           .style("fill-opacity", 1);
 
         nodeUpdate.select("image")
-          .style("display", "block");
+          .style("display",function(d){
+            if(d.depth == 4){
+              return "block";
+            }else{
+              return "none";
+            }
+          });
 
         // Transition exiting nodes to the parent's new position.
         var nodeExit = node.exit().transition()
