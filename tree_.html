@@ -448,7 +448,7 @@
     highlightOff = function(d) {
       svg2.selectAll("path.link").classed('highlight', false).style("stroke-width", function(d) { return d.target.quarter/10; }); 
       $(".span").text(" ");
-      d3.selectAll(".tooltip").remove();
+      //d3.selectAll(".tooltip").remove();
       return update2(d);
     };
 
