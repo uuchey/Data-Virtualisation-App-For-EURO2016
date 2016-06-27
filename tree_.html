@@ -382,6 +382,14 @@
     var diagonal = d3.svg.diagonal()
       .projection(function(d) { return [d.y, d.x]; });
 
+    var orientations = {
+      "right-to-left": {
+        size: [height, width],
+        x: function(d) { return width - d.y; },
+        y: function(d) { return d.x; }
+      },
+    };
+
     var tooltip = d3.select("#area")
       .append("div")
       .data(treeData)
@@ -392,6 +400,8 @@
 
     var svg2 = d3.select("#area")
       .selectAll("svg")
+      .data(d3.entries(orientations))
+      .enter()
       .append("svg")
       .attr("width", width + margin.right + margin.left)
       .attr("height", height + margin.top + margin.bottom)
