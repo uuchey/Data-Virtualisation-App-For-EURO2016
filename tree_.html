@@ -589,7 +589,14 @@
           .attr("x", "-12px")
           .attr("y", "-12px")
           .attr("width", "24px")
-          .attr("height", "24px");
+          .attr("height", "24px")
+          .style("display",function(d){
+            if(d.depth == 4){
+              return "block";
+            }else{
+              return "none";
+            }
+          })
 
         nodeEnter.append("text")
           .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
