@@ -115,9 +115,6 @@
     </div>
 
     <script>
-
-    var gradient = ["#FFFFFF", "#DBBADB", "#B776B7", "#943294", "#4A194A", "#000000", "#11754D", "#23EB9B", "#87DB5A", "#EBCC1A", "#81897C", "#1846DE", "#846788", "#F08833", "#F6482B", "#FC0824"];
-
     //the data
     var treeData = [
       {
@@ -369,6 +366,7 @@
       }
     ];
 
+    // create graph
     var margin = {top: 20, right: 120, bottom: 20, left: 120},
       width = 960 - margin.right - margin.left,
       height = 500 - margin.top - margin.bottom;
@@ -377,6 +375,7 @@
       duration = 750,
       root;
 
+    //generate tree
     var treeDynamic = d3.layout.tree()
       .size([height, width]);
 
