@@ -635,7 +635,7 @@
 
         nodeUpdate.select("image")
           .style("display",function(d){
-            return d._children ? "block" : "none";
+            return d._children && d.depth !=4 ? "block" : "none";
           });
 
         // Transition exiting nodes to the parent's new position.
